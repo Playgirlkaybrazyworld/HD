@@ -14,7 +14,7 @@ struct PostView: View {
   var body: some View {
     ScrollView {
       VStack {
-        Text("\(post.no) \(post.sub ?? "")")
+        Text("\(post.no) \(post.sub?.asRawText ?? "")")
         if let tim = post.tim {
           if let ext = post.ext {
             ImageView(board:board, tim: tim, ext: ext)

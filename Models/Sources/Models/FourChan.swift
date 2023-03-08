@@ -140,8 +140,8 @@ public struct Post: Codable, Hashable, Equatable, Sendable {
   /// Poster's board flag name
   public let flag_name: String?
 
-  /// Subject
-  public let sub: String?
+  /// Subject, includes escaped HTML.
+  public let sub: HTMLString?
 
   /// Comment. Includes escaped HTML.
   public let com: HTMLString?

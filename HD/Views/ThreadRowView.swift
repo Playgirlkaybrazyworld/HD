@@ -11,7 +11,7 @@ import SwiftUI
 struct ThreadRowView: View {
   let post: Post
   var body: some View {
-    Text("\(post.no) \(post.sub ?? "")")
+    Text("\(post.no) \(post.sub?.asRawText ?? "")")
   }
 }
 
