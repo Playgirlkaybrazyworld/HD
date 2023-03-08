@@ -11,6 +11,8 @@
 		3656CEBF29B6FCF000C64299 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3656CEBE29B6FCF000C64299 /* ContentView.swift */; };
 		3656CEC129B6FCF100C64299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3656CEC029B6FCF100C64299 /* Assets.xcassets */; };
 		3656CEC429B6FCF100C64299 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3656CEC329B6FCF100C64299 /* Preview Assets.xcassets */; };
+		3656CED029B83F7F00C64299 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CECF29B83F7F00C64299 /* Models */; };
+		3656CED229B83F8400C64299 /* Network in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CED129B83F8400C64299 /* Network */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		3656CEBE29B6FCF000C64299 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3656CEC029B6FCF100C64299 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3656CEC329B6FCF100C64299 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		3656CECA29B6FD7F00C64299 /* Network */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Network; sourceTree = "<group>"; };
+		3656CECB29B70B2E00C64299 /* Models */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Models; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,6 +30,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3656CED029B83F7F00C64299 /* Models in Frameworks */,
+				3656CED229B83F8400C64299 /* Network in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35,8 +41,11 @@
 		3656CEB029B6FCF000C64299 = {
 			isa = PBXGroup;
 			children = (
+				3656CECB29B70B2E00C64299 /* Models */,
+				3656CECA29B6FD7F00C64299 /* Network */,
 				3656CEBB29B6FCF000C64299 /* HD */,
 				3656CEBA29B6FCF000C64299 /* Products */,
+				3656CECE29B83F7F00C64299 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,6 +76,13 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		3656CECE29B83F7F00C64299 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -83,6 +99,10 @@
 			dependencies = (
 			);
 			name = HD;
+			packageProductDependencies = (
+				3656CECF29B83F7F00C64299 /* Models */,
+				3656CED129B83F8400C64299 /* Network */,
+			);
 			productName = HD;
 			productReference = 3656CEB929B6FCF000C64299 /* HD.app */;
 			productType = "com.apple.product-type.application";
@@ -339,6 +359,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3656CECF29B83F7F00C64299 /* Models */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Models;
+		};
+		3656CED129B83F8400C64299 /* Network */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Network;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3656CEB129B6FCF000C64299 /* Project object */;
 }
