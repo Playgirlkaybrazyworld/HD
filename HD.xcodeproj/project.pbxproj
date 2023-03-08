@@ -22,6 +22,7 @@
 		3656CEE129B84F1600C64299 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3656CEE029B84F1600C64299 /* PostView.swift */; };
 		3656CEE329B850D400C64299 /* ThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3656CEE229B850D400C64299 /* ThumbnailView.swift */; };
 		3656CEE529B853EF00C64299 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3656CEE429B853EF00C64299 /* ImageView.swift */; };
+		3656CEEC29B85B7300C64299 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CEEB29B85B7300C64299 /* SwiftSoup */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 			files = (
 				3656CED029B83F7F00C64299 /* Models in Frameworks */,
 				3656CED229B83F8400C64299 /* Network in Frameworks */,
+				3656CEEC29B85B7300C64299 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +141,7 @@
 			packageProductDependencies = (
 				3656CECF29B83F7F00C64299 /* Models */,
 				3656CED129B83F8400C64299 /* Network */,
+				3656CEEB29B85B7300C64299 /* SwiftSoup */,
 			);
 			productName = HD;
 			productReference = 3656CEB929B6FCF000C64299 /* HD.app */;
@@ -168,6 +171,9 @@
 				Base,
 			);
 			mainGroup = 3656CEB029B6FCF000C64299;
+			packageReferences = (
+				3656CEEA29B85B7300C64299 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+			);
 			productRefGroup = 3656CEBA29B6FCF000C64299 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -406,6 +412,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		3656CEEA29B85B7300C64299 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		3656CECF29B83F7F00C64299 /* Models */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -414,6 +431,11 @@
 		3656CED129B83F8400C64299 /* Network */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Network;
+		};
+		3656CEEB29B85B7300C64299 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3656CEEA29B85B7300C64299 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

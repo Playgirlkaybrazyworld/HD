@@ -23,7 +23,7 @@ struct PostView: View {
           }
         }
         if let com = post.com {
-          Text("\(com)")
+          Text(com.asSafeMarkdownAttributedString)
         }
       }
     }

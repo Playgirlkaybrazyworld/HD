@@ -144,7 +144,7 @@ public struct Post: Codable, Hashable, Equatable, Sendable {
   public let sub: String?
 
   /// Comment. Includes escaped HTML.
-  public let com: String?
+  public let com: HTMLString?
 
   /// Renamed filename (for fetching image).
   /// Based on unix timestamp plus milliseconds.
