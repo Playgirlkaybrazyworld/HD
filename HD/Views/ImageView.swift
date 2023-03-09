@@ -6,6 +6,7 @@
 //
 
 import Network
+import NukeUI
 import SwiftUI
 
 struct ImageView: View {
@@ -15,7 +16,15 @@ struct ImageView: View {
   let tim: Int
   let ext: String
   var body: some View {
-    AsyncImage(url:client.makeURL(endpoint:.image(board: board, tim: tim, ext: ext)), scale:displayScale)
+    LazyImage(url:client.makeURL(endpoint:.image(board: board, tim: tim, ext: ext))){ state in
+      if let image = state.image {
+        image.resizable().aspectRatio(contentMode: .fit)
+      } else if state.error != nil {
+        Color.red // Indicates an error
+      } else {
+        Color.blue // Acts as a placeholder
+      }
+    }
   }
 }
 

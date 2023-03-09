@@ -6,6 +6,7 @@
 //
 
 import Network
+import NukeUI
 import SwiftUI
 
 struct ThumbnailView: View {
@@ -14,7 +15,7 @@ struct ThumbnailView: View {
   let board: String
   let tim: Int
   var body: some View {
-    AsyncImage(url:client.makeURL(endpoint:.thumbnail(board: board, tim: tim)), scale:displayScale)    
+    LazyImage(url:client.makeURL(endpoint:.thumbnail(board: board, tim: tim)))
   }
 }
 
