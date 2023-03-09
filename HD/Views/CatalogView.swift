@@ -21,6 +21,7 @@ struct CatalogView: View {
         CatalogRowView(thread: thread)
       }
     }
+    .navigationTitle(board.title)
     .onAppear {
       Task {
         let catalog: Catalog = try await client.get(endpoint: .catalog(board:board.id))

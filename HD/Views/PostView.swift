@@ -17,9 +17,9 @@ struct PostView: View {
         Text("\(post.no) \(post.sub?.asRawText ?? "")")
         if let tim = post.tim {
           if let ext = post.ext {
-            ImageView(board:board, tim: tim, ext: ext)
+            ImageView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
           } else {
-            ThumbnailView(board:board, tim: tim)
+            ThumbnailView(board:board, tim: tim, width: post.tn_w, height: post.tn_h)
           }
         }
         if let com = post.com {

@@ -15,14 +15,27 @@ struct ImageView: View {
   let board: String
   let tim: Int
   let ext: String
+  let aspectRatio: CGFloat?
+  
+  init(board: String, tim: Int, ext: String, width: Int?, height: Int?) {
+    self.board = board
+    self.tim = tim
+    self.ext = ext
+    if let width, let height, height > 0 {
+      aspectRatio = CGFloat(width)/CGFloat(height)
+    } else {
+      aspectRatio = nil
+    }
+  }
+  
   var body: some View {
     LazyImage(url:client.makeURL(endpoint:.image(board: board, tim: tim, ext: ext))){ state in
       if let image = state.image {
-        image.resizable().aspectRatio(contentMode: .fit)
+        image.resizable().aspectRatio(aspectRatio, contentMode: .fit)
       } else if state.error != nil {
         Color.red // Indicates an error
       } else {
-        Color.blue // Acts as a placeholder
+        Color.blue.aspectRatio(aspectRatio, contentMode: .fit) // Acts as a placeholder
       }
     }
   }

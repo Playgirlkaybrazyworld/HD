@@ -29,6 +29,7 @@ struct BoardsView: View {
         }
       }
     }
+    .navigationTitle("boards")
   }
 }
 
