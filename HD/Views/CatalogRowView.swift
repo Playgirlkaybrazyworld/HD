@@ -11,7 +11,13 @@ import SwiftUI
 struct CatalogRowView: View {
   let thread: Post
   var body: some View {
-    Text(thread.sub?.asRawText ?? thread.com?.asRawText ?? "\(thread.id)").lineLimit(3)
+    if let sub = thread.sub {
+      Text(sub.asSafeMarkdownAttributedString)
+    } else if let com = thread.com {
+      Text(com.asSafeMarkdownAttributedString).lineLimit(3)
+    } else {
+      Text("\(thread.id)")
+    }
   }
 }
 
