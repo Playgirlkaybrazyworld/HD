@@ -22,6 +22,7 @@ struct CatalogView: View {
       }
     }
     .navigationTitle(board.title)
+    .navigationBarTitleDisplayMode(.inline)
     .onAppear {
       Task {
         let catalog: Catalog = try await client.get(endpoint: .catalog(board:board.id))

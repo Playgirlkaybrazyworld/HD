@@ -23,6 +23,7 @@ struct ThreadView: View {
     List(posts){post in
       PostView(board:board, post:post)
     }
+    .navigationBarTitleDisplayMode(.inline)
     .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
       collectionView.isPrefetchingEnabled = true
       collectionView.prefetchDataSource = self.prefetcher
