@@ -28,6 +28,7 @@
 		3656CEF929B984CF00C64299 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CEF829B984CF00C64299 /* NukeExtensions */; };
 		3656CEFB29B984CF00C64299 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CEFA29B984CF00C64299 /* NukeUI */; };
 		3656CEFD29B984CF00C64299 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CEFC29B984CF00C64299 /* NukeVideo */; };
+		366B688F29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366B688E29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		3656CEE429B853EF00C64299 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		3656CEE629B8574D00C64299 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3656CEF029B9730500C64299 /* ThreadViewPrefetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewPrefetcher.swift; sourceTree = "<group>"; };
+		366B688E29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewPrefetcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 				3656CED329B8427700C64299 /* Views */,
 				3656CEC029B6FCF100C64299 /* Assets.xcassets */,
 				3656CEC229B6FCF100C64299 /* Preview Content */,
+				366B688E29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift */,
 				3656CEF029B9730500C64299 /* ThreadViewPrefetcher.swift */,
 			);
 			path = HD;
@@ -229,6 +232,7 @@
 				3656CEDF29B84E7600C64299 /* ThreadRowView.swift in Sources */,
 				3656CED929B8448D00C64299 /* CatalogView.swift in Sources */,
 				3656CEF129B9730500C64299 /* ThreadViewPrefetcher.swift in Sources */,
+				366B688F29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift in Sources */,
 				3656CEE529B853EF00C64299 /* ImageView.swift in Sources */,
 				3656CED529B8429200C64299 /* BoardsView.swift in Sources */,
 				3656CEDD29B8498800C64299 /* ThreadView.swift in Sources */,

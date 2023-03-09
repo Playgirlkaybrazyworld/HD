@@ -31,11 +31,11 @@ struct ThreadView: View {
     .onAppear {
       Task {
         let thread: ChanThread = try await client.get(endpoint: .thread(board:board, no:thread.no))
+        self.prefetcher.posts = thread.posts
+        self.prefetcher.board = board
+        self.prefetcher.client = client
         withAnimation {
           self.posts = thread.posts
-          self.prefetcher.posts = thread.posts
-          self.prefetcher.board = board
-          self.prefetcher.client = client
         }
       }
     }

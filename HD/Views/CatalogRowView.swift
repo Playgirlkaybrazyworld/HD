@@ -9,14 +9,20 @@ import Models
 import SwiftUI
 
 struct CatalogRowView: View {
+  let board: String
   let thread: Post
   var body: some View {
-    if let sub = thread.sub {
-      Text(sub.asSafeMarkdownAttributedString)
-    } else if let com = thread.com {
-      Text(com.asSafeMarkdownAttributedString).lineLimit(3)
-    } else {
-      Text("\(thread.id)")
+    HStack {
+      if let tim = thread.tim {
+        ThumbnailView(board: board, tim: tim, width: thread.tn_w, height: thread.tn_h, maxSize: 100.0)
+      }
+      if let sub = thread.sub {
+        Text(sub.asSafeMarkdownAttributedString)
+      } else if let com = thread.com {
+        Text(com.asSafeMarkdownAttributedString).lineLimit(3)
+      } else {
+        Text("\(thread.id)")
+      }
     }
   }
 }
