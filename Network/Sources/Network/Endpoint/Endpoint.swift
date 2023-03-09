@@ -3,7 +3,7 @@ import Foundation
 /// The endpoints that make up the read-only 4chan API.
 ///
 /// See https://github.com/4chan/4chan-API
-public enum Endpoint {
+public enum Endpoint : Sendable {
   case boards
   case catalog(board: String)
   case thread(board: String, no: Int)
