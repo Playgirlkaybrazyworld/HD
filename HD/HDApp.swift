@@ -12,9 +12,8 @@ import SwiftUI
 struct HDApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+          BoardsView()
             .environmentObject(Client())
-
         }
     }
 }

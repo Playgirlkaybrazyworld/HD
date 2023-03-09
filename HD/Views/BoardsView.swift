@@ -12,15 +12,10 @@ import SwiftUI
 struct BoardsView: View {
   @EnvironmentObject private var client: Client
   @State private var boards: [Board] = []
-  
+  @State private var selectedBoard: Board?
+
   var body: some View {
-    List(boards) {board in
-      NavigationLink {
-        CatalogView(board:board)
-      } label: {
-        BoardsRowView(board:board)
-      }
-    }
+    NavigationSplitView(sidebar: { sidebar }, detail: { detail } )
     .onAppear {
       Task {
         let boards: Boards = try await client.get(endpoint: .boards)
@@ -30,6 +25,26 @@ struct BoardsView: View {
       }
     }
     .navigationTitle("boards")
+  }
+  
+  @ViewBuilder
+  var sidebar: some View {
+    List(boards, selection: $selectedBoard) { board in
+      NavigationLink(value: board) {
+        BoardsRowView(board:board)
+      }
+    }
+  }
+  
+  @ViewBuilder
+  var detail: some View {
+    if let selectedBoard = selectedBoard {
+      CatalogView(board:selectedBoard)
+        // ID is required to force the detail to refresh on iOS 16.2 simulator.
+        .id(selectedBoard.id)
+    } else {
+      Text("Select a board from the sidebar.")
+    }
   }
 }
 
