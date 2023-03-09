@@ -35,7 +35,7 @@ struct ImageView: View {
       } else if state.error != nil {
         Color.red // Indicates an error
       } else {
-        Color.blue.aspectRatio(aspectRatio, contentMode: .fit) // Acts as a placeholder
+        Color(red: 0.0, green: 0.0, blue: 0.0, opacity: 0.0).aspectRatio(aspectRatio, contentMode: .fit) // Acts as a placeholder
       }
     }
   }
