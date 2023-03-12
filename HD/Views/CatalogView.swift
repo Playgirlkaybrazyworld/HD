@@ -18,6 +18,7 @@ struct CatalogView: View {
   @State private var threads: Posts = []
   
   @StateObject private var prefetcher = CatalogViewPrefetcher()
+  let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
   var body: some View {
     List(threads){ thread in
@@ -33,13 +34,16 @@ struct CatalogView: View {
     }
     .onAppear {
       Task {
-        let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
-        let threads = catalog.flatMap(\.threads)
-        self.prefetcher.posts = threads
         self.prefetcher.board = board
         self.prefetcher.client = client
-        withAnimation {
-          self.threads = threads
+        while !Task.isCancelled {
+          let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
+          let threads = catalog.flatMap(\.threads)
+          self.prefetcher.posts = threads
+          withAnimation {
+            self.threads = threads
+          }
+          try await Task.sleep(nanoseconds:30 * 1_000_000_000)
         }
       }
     }

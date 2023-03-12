@@ -30,12 +30,15 @@ struct ThreadView: View {
     }
     .onAppear {
       Task {
-        let thread: ChanThread = try await client.get(endpoint: .thread(board:board, no:threadNo))
-        self.prefetcher.posts = thread.posts
         self.prefetcher.board = board
         self.prefetcher.client = client
-        withAnimation {
-          self.posts = thread.posts
+        while !Task.isCancelled {
+          let thread: ChanThread = try await client.get(endpoint: .thread(board:board, no:threadNo))
+          self.prefetcher.posts = thread.posts
+          withAnimation {
+            self.posts = thread.posts
+          }
+          try await Task.sleep(nanoseconds:30 * 1_000_000_000)
         }
       }
     }
