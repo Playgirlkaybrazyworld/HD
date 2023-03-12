@@ -13,7 +13,7 @@ struct PostView: View {
   let post: Post
   var body: some View {
     ScrollView {
-      VStack {
+      VStack(alignment:.leading) {
         Text("\(post.no) \(post.sub?.asRawText ?? "")")
         if let tim = post.tim {
           if let ext = post.ext {

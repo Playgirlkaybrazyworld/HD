@@ -28,6 +28,7 @@ struct CatalogView: View {
     }
     .navigationTitle(board)
     .navigationBarTitleDisplayMode(.inline)
+    .listStyle(.plain)
     .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
       collectionView.isPrefetchingEnabled = true
       collectionView.prefetchDataSource = self.prefetcher
