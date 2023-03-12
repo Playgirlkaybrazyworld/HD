@@ -12,7 +12,7 @@ struct CatalogRowView: View {
   let board: String
   let thread: Post
   var body: some View {
-    HStack {
+    HStack(alignment:.top) {
       if let tim = thread.tim {
         ThumbnailView(board: board, tim: tim, width: thread.tn_w, height: thread.tn_h, maxSize: 100.0)
       }
