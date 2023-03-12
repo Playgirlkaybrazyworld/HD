@@ -14,7 +14,7 @@ import UIKit
 struct ThreadView: View {
   @EnvironmentObject private var client: Client
   let board: String
-  let thread: Post
+  let threadNo: Int
   @State private var posts: Posts = []
   
   @StateObject private var prefetcher = ThreadViewPrefetcher()
@@ -30,7 +30,7 @@ struct ThreadView: View {
     }
     .onAppear {
       Task {
-        let thread: ChanThread = try await client.get(endpoint: .thread(board:board, no:thread.no))
+        let thread: ChanThread = try await client.get(endpoint: .thread(board:board, no:threadNo))
         self.prefetcher.posts = thread.posts
         self.prefetcher.board = board
         self.prefetcher.client = client

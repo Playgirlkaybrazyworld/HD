@@ -5,6 +5,7 @@
 //  Created by Jack Palevich on 3/7/23.
 //
 
+import Env
 import Introspect
 import Models
 import Network
@@ -13,20 +14,18 @@ import UIKit
 
 struct CatalogView: View {
   @EnvironmentObject private var client: Client
-  let board: Board
+  let board: String
   @State private var threads: Posts = []
   
   @StateObject private var prefetcher = CatalogViewPrefetcher()
 
   var body: some View {
     List(threads){ thread in
-      NavigationLink {
-        ThreadView(board:board.id, thread:thread)
-      } label: {
-        CatalogRowView(board:board.id, thread: thread)
+      NavigationLink(value: RouterDestination.thread(board:board, threadNo:thread.no)) {
+        CatalogRowView(board:board, thread: thread)
       }
     }
-    .navigationTitle(board.title)
+    .navigationTitle(board)
     .navigationBarTitleDisplayMode(.inline)
     .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
       collectionView.isPrefetchingEnabled = true
@@ -34,10 +33,10 @@ struct CatalogView: View {
     }
     .onAppear {
       Task {
-        let catalog: Catalog = try await client.get(endpoint: .catalog(board:board.id))
+        let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
         let threads = catalog.flatMap(\.threads)
         self.prefetcher.posts = threads
-        self.prefetcher.board = board.id
+        self.prefetcher.board = board
         self.prefetcher.client = client
         withAnimation {
           self.threads = threads
