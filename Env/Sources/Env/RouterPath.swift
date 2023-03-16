@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 
 public enum RouterDestination: Hashable {
   case boards
@@ -9,9 +10,11 @@ public enum RouterDestination: Hashable {
 @MainActor
 public class RouterPath: ObservableObject {
   @Published public var selection : RouterDestination?
-  @Published public var path: [RouterDestination] = []
+  @Published public var path: NavigationPath
 
-  public init() {}
+  public init() {
+    path = NavigationPath()
+  }
 
   public func navigate(to: RouterDestination) {
     path.append(to)
