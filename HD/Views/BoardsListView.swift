@@ -12,7 +12,7 @@ struct BoardsListView: View {
 
   var body: some View {
     List(boardIDs, id:\.self, selection: $selection) { boardID in
-      NavigationLink(value: RouterDestination.catalog(board:boardID)) {
+      NavigationLink(value: boardID) {
         BoardsRowView(board:boardDict[boardID]!)
       }
     }

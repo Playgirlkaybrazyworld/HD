@@ -9,33 +9,27 @@ public enum RouterDestination: Hashable, Codable {
 
 @MainActor
 public class RouterPath: ObservableObject {
-  @Published public var selection: String?
-  @Published public var path: NavigationPath
+  @Published public var path: [RouterDestination]
   
   private struct StorageModel: Codable {
-    public var selection: String?
-    public var path: NavigationPath
+    public var path: [RouterDestination]
     
     private enum CodingKeys: String, CodingKey {
-      case selection
       case path
     }
     
-    public init(selection: String?, path:NavigationPath) {
-      self.selection = selection
+    public init(path:[RouterDestination]) {
       self.path = path
     }
     
     public init(from decoder: Decoder) throws {
       let data = try decoder.container(keyedBy: CodingKeys.self)
-      self.selection = try data.decode(String?.self, forKey: .selection)
-      self.path = NavigationPath(try data.decode(NavigationPath.CodableRepresentation.self, forKey: .path))
+      self.path = try data.decode([RouterDestination].self, forKey: .path)
     }
     
     public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)
-      try container.encode(selection, forKey: .selection)
-      try container.encode(path.codable, forKey: .path)
+      try container.encode(path, forKey: .path)
     }
   }
   
@@ -43,7 +37,7 @@ public class RouterPath: ObservableObject {
   private let encoder = JSONEncoder()
   
   public func encoded() -> Data? {
-    let model = StorageModel(selection: selection, path: path)
+    let model = StorageModel(path: path)
     return try? encoder.encode(model)
   }
   
@@ -53,20 +47,24 @@ public class RouterPath: ObservableObject {
         StorageModel.self, from: data
       )
       self.path = model.path
-      self.selection = model.selection
     } catch {
-      selection = nil
-      path = NavigationPath()
-    }
+      path = []    }
   }
   
   
   public init() {
-    path = NavigationPath()
+    path = []
   }
   
   public func navigate(to: RouterDestination) {
-    path.append(to)
+    switch to {
+    case .boards:
+      path = []
+    case .catalog:
+      path = [to]
+    case .thread:
+      path.append(to)
+    }
   }
   
   public func popToRoot() {

@@ -15,11 +15,17 @@ struct ContentView: View {
   @StateObject var routerPath = RouterPath()
   @StateObject var client = Client()
   @SceneStorage("routerPath") private var routerPathData: Data?
+  @State private var selection: String?
 
   var body: some View {
     body2
       .environmentObject(client)
       .environmentObject(routerPath)
+      .onChange(of: selection) { newVal in
+        if let newVal {
+          routerPath.navigate(to: .catalog(board: newVal))
+        }
+      }
       .onChange(of: scenePhase) { phase in
         switch phase {
         case .active:
@@ -40,7 +46,7 @@ struct ContentView: View {
   @ViewBuilder
   var body2: some View {
     NavigationSplitView {
-      BoardsListView(selection: $routerPath.selection)
+      BoardsListView(selection: $selection)
     } detail: {
       NavigationStack(path: $routerPath.path) {
         detailStackContents
@@ -51,10 +57,6 @@ struct ContentView: View {
   
   @ViewBuilder
   var detailStackContents: some View {
-    if let selection = routerPath.selection {
-      CatalogView(board: selection).id(selection)
-    } else {
-      Text("Please choose a board")
-    }
+    Text("Please choose a board")
   }
 }
