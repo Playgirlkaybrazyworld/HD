@@ -18,8 +18,8 @@ struct ContentView: View {
       BoardsListView(selection: $routerPath.selection)
     } detail: {
       NavigationStack(path: $routerPath.path) {
-        if case let .catalog(board) = routerPath.selection {
-          CatalogView(board: board).id(board)
+        if let selection = routerPath.selection {
+          CatalogView(board: selection).id(selection)
             .withAppRouter()
         } else {
           Text("Please choose a board")

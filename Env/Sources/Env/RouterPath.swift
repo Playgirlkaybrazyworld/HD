@@ -9,7 +9,7 @@ public enum RouterDestination: Hashable {
 
 @MainActor
 public class RouterPath: ObservableObject {
-  @Published public var selection : RouterDestination?
+  @Published public var selection: String?
   @Published public var path: NavigationPath
 
   public init() {

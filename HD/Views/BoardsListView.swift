@@ -6,13 +6,14 @@ import SwiftUI
 
 struct BoardsListView: View {
   @EnvironmentObject private var client: Client
-  @State private var boards: [Board] = []
-  @Binding var selection: RouterDestination?
+  @State private var boardIDs: [String] = []
+  @State private var boardDict: [String: Board] = [:]
+  @Binding var selection: String?
 
   var body: some View {
-    List(boards, selection: $selection) { board in
-      NavigationLink(value: RouterDestination.catalog(board:board.id)) {
-        BoardsRowView(board:board)
+    List(boardIDs, id:\.self, selection: $selection) { boardID in
+      NavigationLink(value: RouterDestination.catalog(board:boardID)) {
+        BoardsRowView(board:boardDict[boardID]!)
       }
     }
     .navigationTitle("Boards")
@@ -20,7 +21,9 @@ struct BoardsListView: View {
       Task {
         let boards: Boards = try await client.get(endpoint: .boards)
         withAnimation {
-          self.boards = boards.boards
+          boardDict = [String:Board](uniqueKeysWithValues:
+                                      boards.boards.map{($0.id, $0)})
+          boardIDs = boardDict.keys.sorted()
         }
       }
     }
