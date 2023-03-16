@@ -11,13 +11,9 @@ import SwiftUI
 
 @main
 struct HDApp: App {
-  @StateObject var routerPath = RouterPath()
-  @StateObject var client = Client()
-    var body: some Scene {
-        WindowGroup {
-          ContentView()
-            .environmentObject(client)
-            .environmentObject(routerPath)
-        }
+  var body: some Scene {
+    WindowGroup {
+      ContentView()
     }
+  }
 }
