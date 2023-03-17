@@ -8,11 +8,11 @@ struct BoardsListView: View {
   @EnvironmentObject private var client: Client
   @State private var boardIDs: [String] = []
   @State private var boardDict: [String: Board] = [:]
-  @Binding var selection: String?
+  @State var selection: String?
 
   var body: some View {
     List(boardIDs, id:\.self, selection: $selection) { boardID in
-      NavigationLink(value: boardID) {
+      NavigationLink(value: RouterDestination.catalog(board: boardID)) {
         BoardsRowView(board:boardDict[boardID]!)
       }
     }
