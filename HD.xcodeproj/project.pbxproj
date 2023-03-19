@@ -10,7 +10,6 @@
 		3656CEBD29B6FCF000C64299 /* HDApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3656CEBC29B6FCF000C64299 /* HDApp.swift */; };
 		3656CEC129B6FCF100C64299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3656CEC029B6FCF100C64299 /* Assets.xcassets */; };
 		3656CEC429B6FCF100C64299 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3656CEC329B6FCF100C64299 /* Preview Assets.xcassets */; };
-		3656CED029B83F7F00C64299 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CECF29B83F7F00C64299 /* Models */; };
 		3656CED229B83F8400C64299 /* Network in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CED129B83F8400C64299 /* Network */; };
 		3656CED529B8429200C64299 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3656CED429B8429200C64299 /* ContentView.swift */; };
 		3656CED729B842F500C64299 /* BoardsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3656CED629B842F500C64299 /* BoardsRowView.swift */; };
@@ -32,6 +31,7 @@
 		366B689229BD270700B5BC0E /* Env in Frameworks */ = {isa = PBXBuildFile; productRef = 366B689129BD270700B5BC0E /* Env */; };
 		366B689429BD2A8F00B5BC0E /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366B689329BD2A8F00B5BC0E /* AppRouter.swift */; };
 		366B689629BD30B300B5BC0E /* BoardsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366B689529BD30B300B5BC0E /* BoardsListView.swift */; };
+		3670AE9929C7C28000F12E0C /* FourChan in Frameworks */ = {isa = PBXBuildFile; productRef = 3670AE9829C7C28000F12E0C /* FourChan */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,7 +40,6 @@
 		3656CEC029B6FCF100C64299 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3656CEC329B6FCF100C64299 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3656CECA29B6FD7F00C64299 /* Network */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Network; sourceTree = "<group>"; };
-		3656CECB29B70B2E00C64299 /* Models */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Models; sourceTree = "<group>"; };
 		3656CED429B8429200C64299 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3656CED629B842F500C64299 /* BoardsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsRowView.swift; sourceTree = "<group>"; };
 		3656CED829B8448D00C64299 /* CatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogView.swift; sourceTree = "<group>"; };
@@ -64,11 +63,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				366B689229BD270700B5BC0E /* Env in Frameworks */,
-				3656CED029B83F7F00C64299 /* Models in Frameworks */,
 				3656CEFB29B984CF00C64299 /* NukeUI in Frameworks */,
 				3656CEEF29B971AC00C64299 /* Introspect in Frameworks */,
 				3656CEFD29B984CF00C64299 /* NukeVideo in Frameworks */,
 				3656CED229B83F8400C64299 /* Network in Frameworks */,
+				3670AE9929C7C28000F12E0C /* FourChan in Frameworks */,
 				3656CEEC29B85B7300C64299 /* SwiftSoup in Frameworks */,
 				3656CEF729B984CF00C64299 /* Nuke in Frameworks */,
 				3656CEF929B984CF00C64299 /* NukeExtensions in Frameworks */,
@@ -147,7 +146,6 @@
 			isa = PBXGroup;
 			children = (
 				366B689029BD245D00B5BC0E /* Env */,
-				3656CECB29B70B2E00C64299 /* Models */,
 				3656CECA29B6FD7F00C64299 /* Network */,
 			);
 			name = Packages;
@@ -170,7 +168,6 @@
 			);
 			name = HD;
 			packageProductDependencies = (
-				3656CECF29B83F7F00C64299 /* Models */,
 				3656CED129B83F8400C64299 /* Network */,
 				3656CEEB29B85B7300C64299 /* SwiftSoup */,
 				3656CEEE29B971AC00C64299 /* Introspect */,
@@ -179,6 +176,7 @@
 				3656CEFA29B984CF00C64299 /* NukeUI */,
 				3656CEFC29B984CF00C64299 /* NukeVideo */,
 				366B689129BD270700B5BC0E /* Env */,
+				3670AE9829C7C28000F12E0C /* FourChan */,
 			);
 			productName = HD;
 			productReference = 3656CEB929B6FCF000C64299 /* HD.app */;
@@ -212,6 +210,7 @@
 				3656CEEA29B85B7300C64299 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				3656CEED29B971AC00C64299 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				3656CEF529B984CF00C64299 /* XCRemoteSwiftPackageReference "Nuke" */,
+				3670AE9729C7C28000F12E0C /* XCRemoteSwiftPackageReference "FourChanAPI" */,
 			);
 			productRefGroup = 3656CEBA29B6FCF000C64299 /* Products */;
 			projectDirPath = "";
@@ -479,13 +478,17 @@
 				kind = branch;
 			};
 		};
+		3670AE9729C7C28000F12E0C /* XCRemoteSwiftPackageReference "FourChanAPI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jackpal/FourChanAPI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3656CECF29B83F7F00C64299 /* Models */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Models;
-		};
 		3656CED129B83F8400C64299 /* Network */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Network;
@@ -523,6 +526,11 @@
 		366B689129BD270700B5BC0E /* Env */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Env;
+		};
+		3670AE9829C7C28000F12E0C /* FourChan */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3670AE9729C7C28000F12E0C /* XCRemoteSwiftPackageReference "FourChanAPI" */;
+			productName = FourChan;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

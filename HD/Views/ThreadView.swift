@@ -6,7 +6,7 @@
 //
 
 import Introspect
-import Models
+import FourChan
 import Network
 import SwiftUI
 import UIKit

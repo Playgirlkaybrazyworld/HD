@@ -1,6 +1,6 @@
 import Env
 import Foundation
-import Models
+import FourChan
 import Network
 import SwiftUI
 

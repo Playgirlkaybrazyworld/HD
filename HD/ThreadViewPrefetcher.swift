@@ -1,4 +1,4 @@
-import Models
+import FourChan
 import Network
 import Nuke
 import SwiftUI
