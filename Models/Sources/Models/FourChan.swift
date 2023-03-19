@@ -11,7 +11,7 @@ public typealias Archive = [PostNumber]
 
 public typealias Catalog = [Page]
 
-public struct Board: Codable, Hashable, Equatable, Sendable {
+public struct Board: Codable, Equatable, Hashable, Sendable {
   public let board: BoardName
   public let title: String
 
@@ -27,7 +27,7 @@ public struct Board: Codable, Hashable, Equatable, Sendable {
   public let bump_limit: Int
   public let image_limit: Int
 
-  public struct Cooldowns: Codable, Hashable, Sendable {
+  public struct Cooldowns: Codable, Equatable, Hashable, Sendable {
     public let threads: Int
     public let replies: Int
     public let images: Int
@@ -74,13 +74,13 @@ extension Board: Identifiable {
   }
 }
 
-public struct Boards: Codable, Hashable, Equatable, Sendable {
+public struct Boards: Codable, Equatable, Hashable, Sendable {
   public let boards: [Board]
 }
 
 public typealias Posts = [Post]
 
-public struct Page: Codable, Hashable, Equatable, Sendable {
+public struct Page: Codable, Equatable, Hashable, Sendable {
   public let page: Int
   public let threads: Posts
 }
@@ -94,7 +94,7 @@ extension Page: Identifiable {
 public typealias Pages = [Page]
 
 /// A message from a user.
-public struct Post: Codable, Hashable, Equatable, Sendable {
+public struct Post: Codable, Equatable, Hashable, Sendable {
   /// Post number.
   public let no: PostNumber
 
@@ -246,7 +246,7 @@ extension Post {
 ///
 /// Naming this "Thread" causes SwiftUI previews to fail to compile.
 /// Error: 'Thread' is ambiguous for type lookup in this context
-public struct ChanThread: Codable, Hashable, Equatable, Sendable {
+public struct ChanThread: Codable, Equatable, Hashable, Sendable {
   public let posts: Posts
 }
 
