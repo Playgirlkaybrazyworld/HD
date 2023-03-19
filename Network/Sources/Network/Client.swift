@@ -1,4 +1,5 @@
 import Combine
+import FourChan
 import Foundation
 import SwiftUI
 import os
@@ -11,38 +12,28 @@ public final class Client: ObservableObject {
     urlSession = URLSession.shared
   }
   
-  private func makeURLRequest(url: URL, endpoint: Endpoint, httpMethod: String) -> URLRequest {
-    var request = URLRequest(url: url)
+  public func makeURL(endpoint: FourChanAPIEndpoint) -> URL {
+    endpoint.url()
+  }
+  
+  private func makeURLRequest(endpoint: FourChanAPIEndpoint, httpMethod: String) -> URLRequest {
+    var request = URLRequest(url: endpoint.url())
     request.httpMethod = httpMethod
     return request
   }
-  
-  public func makeURL(scheme: String = "https",
-                       endpoint: Endpoint,
-                       forceServer: String? = nil) -> URL
-  {
-    var components = URLComponents()
-    components.scheme = scheme
-    components.host = forceServer ?? endpoint.host
-    components.path = endpoint.path
-    components.queryItems = endpoint.queryItems
-    return components.url!
+    
+  private func makeGet(endpoint: FourChanAPIEndpoint) -> URLRequest {
+    return makeURLRequest(endpoint: endpoint, httpMethod: "GET")
   }
   
-  private func makeGet(endpoint: Endpoint) -> URLRequest {
-    let url = makeURL(endpoint: endpoint)
-    return makeURLRequest(url: url, endpoint: endpoint, httpMethod: "GET")
-  }
-  
-  public func get<Entity: Decodable>(endpoint: Endpoint) async throws -> Entity {
+  public func get<Entity: Decodable>(endpoint: FourChanAPIEndpoint) async throws -> Entity {
     try await makeEntityRequest(endpoint: endpoint, method: "GET")
   }
   
-  private func makeEntityRequest<Entity: Decodable>(endpoint: Endpoint,
+  private func makeEntityRequest<Entity: Decodable>(endpoint: FourChanAPIEndpoint,
                                                     method: String) async throws -> Entity
   {
-    let url = makeURL(endpoint: endpoint)
-    let request = makeURLRequest(url: url, endpoint: endpoint, httpMethod: method)
+    let request = makeURLRequest(endpoint: endpoint, httpMethod: method)
     let (data, httpResponse) = try await urlSession.data(for: request)
     logResponseOnError(httpResponse: httpResponse, data: data)
     return try decoder.decode(Entity.self, from: data)

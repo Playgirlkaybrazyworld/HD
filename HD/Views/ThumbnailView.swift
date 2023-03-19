@@ -5,6 +5,7 @@
 //  Created by Jack Palevich on 3/7/23.
 //
 
+import FourChan
 import Network
 import NukeUI
 import SwiftUI
@@ -28,7 +29,7 @@ struct ThumbnailView: View {
   }
 
   var body: some View {
-    LazyImage(url:client.makeURL(endpoint:.thumbnail(board: board, tim: tim))){ state in
+    LazyImage(url:client.makeURL(endpoint:FourChanAPIEndpoint.thumbnail(board: board, tim: tim))){ state in
       if let image = state.image {
         image.resizable()
           .aspectRatio(aspectRatio, contentMode: .fill)
