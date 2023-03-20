@@ -6,6 +6,7 @@
 //
 
 import FourChan
+import HTMLString
 import SwiftUI
 
 struct PostView: View {
@@ -14,7 +15,7 @@ struct PostView: View {
   var body: some View {
     ScrollView {
       VStack(alignment:.leading) {
-        Text("\(post.no) \(post.sub?.asRawText ?? "")")
+        Text("\(post.no) \(subject)")
         if let tim = post.tim {
           if let ext = post.ext {
             ImageView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
@@ -23,10 +24,17 @@ struct PostView: View {
           }
         }
         if let com = post.com {
-          Text(com.asSafeMarkdownAttributedString)
+          Text(HTMLString(html:com).asSafeMarkdownAttributedString)
         }
       }
     }
+  }
+  
+  var subject: String {
+    if let sub = post.sub {
+      return HTMLString(html: sub).asRawText
+    }
+    return ""
   }
 }
 

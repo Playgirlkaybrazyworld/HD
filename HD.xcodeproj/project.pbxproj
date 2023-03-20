@@ -31,7 +31,8 @@
 		366B689229BD270700B5BC0E /* Env in Frameworks */ = {isa = PBXBuildFile; productRef = 366B689129BD270700B5BC0E /* Env */; };
 		366B689429BD2A8F00B5BC0E /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366B689329BD2A8F00B5BC0E /* AppRouter.swift */; };
 		366B689629BD30B300B5BC0E /* BoardsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366B689529BD30B300B5BC0E /* BoardsListView.swift */; };
-		3670AE9929C7C28000F12E0C /* FourChan in Frameworks */ = {isa = PBXBuildFile; productRef = 3670AE9829C7C28000F12E0C /* FourChan */; };
+		36EC2EF129C7EF990012F438 /* FourChan in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF029C7EF990012F438 /* FourChan */; };
+		36EC2EF429C7F12A0012F438 /* HTMLString in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF329C7F12A0012F438 /* HTMLString */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,12 +63,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				36EC2EF429C7F12A0012F438 /* HTMLString in Frameworks */,
+				36EC2EF129C7EF990012F438 /* FourChan in Frameworks */,
 				366B689229BD270700B5BC0E /* Env in Frameworks */,
 				3656CEFB29B984CF00C64299 /* NukeUI in Frameworks */,
 				3656CEEF29B971AC00C64299 /* Introspect in Frameworks */,
 				3656CEFD29B984CF00C64299 /* NukeVideo in Frameworks */,
 				3656CED229B83F8400C64299 /* Network in Frameworks */,
-				3670AE9929C7C28000F12E0C /* FourChan in Frameworks */,
 				3656CEEC29B85B7300C64299 /* SwiftSoup in Frameworks */,
 				3656CEF729B984CF00C64299 /* Nuke in Frameworks */,
 				3656CEF929B984CF00C64299 /* NukeExtensions in Frameworks */,
@@ -176,7 +178,8 @@
 				3656CEFA29B984CF00C64299 /* NukeUI */,
 				3656CEFC29B984CF00C64299 /* NukeVideo */,
 				366B689129BD270700B5BC0E /* Env */,
-				3670AE9829C7C28000F12E0C /* FourChan */,
+				36EC2EF029C7EF990012F438 /* FourChan */,
+				36EC2EF329C7F12A0012F438 /* HTMLString */,
 			);
 			productName = HD;
 			productReference = 3656CEB929B6FCF000C64299 /* HD.app */;
@@ -210,7 +213,8 @@
 				3656CEEA29B85B7300C64299 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				3656CEED29B971AC00C64299 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				3656CEF529B984CF00C64299 /* XCRemoteSwiftPackageReference "Nuke" */,
-				3670AE9729C7C28000F12E0C /* XCRemoteSwiftPackageReference "FourChanAPI" */,
+				36EC2EEF29C7EF990012F438 /* XCRemoteSwiftPackageReference "FourChanAPI" */,
+				36EC2EF229C7F12A0012F438 /* XCRemoteSwiftPackageReference "HTMLString" */,
 			);
 			productRefGroup = 3656CEBA29B6FCF000C64299 /* Products */;
 			projectDirPath = "";
@@ -478,12 +482,20 @@
 				kind = branch;
 			};
 		};
-		3670AE9729C7C28000F12E0C /* XCRemoteSwiftPackageReference "FourChanAPI" */ = {
+		36EC2EEF29C7EF990012F438 /* XCRemoteSwiftPackageReference "FourChanAPI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jackpal/FourChanAPI";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
+				minimumVersion = 3.0.0;
+			};
+		};
+		36EC2EF229C7F12A0012F438 /* XCRemoteSwiftPackageReference "HTMLString" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jackpal/HTMLString";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -527,10 +539,15 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Env;
 		};
-		3670AE9829C7C28000F12E0C /* FourChan */ = {
+		36EC2EF029C7EF990012F438 /* FourChan */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3670AE9729C7C28000F12E0C /* XCRemoteSwiftPackageReference "FourChanAPI" */;
+			package = 36EC2EEF29C7EF990012F438 /* XCRemoteSwiftPackageReference "FourChanAPI" */;
 			productName = FourChan;
+		};
+		36EC2EF329C7F12A0012F438 /* HTMLString */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 36EC2EF229C7F12A0012F438 /* XCRemoteSwiftPackageReference "HTMLString" */;
+			productName = HTMLString;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

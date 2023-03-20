@@ -6,6 +6,7 @@
 //
 
 import FourChan
+import HTMLString
 import SwiftUI
 
 struct CatalogRowView: View {
@@ -17,9 +18,9 @@ struct CatalogRowView: View {
         ThumbnailView(board: board, tim: tim, width: thread.tn_w, height: thread.tn_h, maxSize: 100.0)
       }
       if let sub = thread.sub {
-        Text(sub.asSafeMarkdownAttributedString)
+        Text(HTMLString(html:sub).asSafeMarkdownAttributedString)
       } else if let com = thread.com {
-        Text(com.asSafeMarkdownAttributedString).lineLimit(3)
+        Text(HTMLString(html:com).asSafeMarkdownAttributedString).lineLimit(3)
       } else {
         Text("\(thread.id)")
       }
