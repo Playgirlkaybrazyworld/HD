@@ -22,8 +22,10 @@ struct PostView: View {
           if let ext = post.ext {
             if isDisplayable(ext) {
               ImageView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
-            } else if isGifu(ext) {
-              Text("Gif!!")
+            } else if isGif(ext) {
+              AnimatedGifView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
+                .aspectRatio(CGFloat(post.w!) / CGFloat(post.h!), contentMode: .fill)
+                .frame(maxWidth:CGFloat(post.w!), maxHeight:CGFloat(post.h!))
             } else if isAnimatable(ext) {
               Text("Webm!!")
             } else {
@@ -52,7 +54,7 @@ struct PostView: View {
     ext == ".jpg" || ext == ".png"
   }
   
-  func isGifu(_ ext: String) -> Bool {
+  func isGif(_ ext: String) -> Bool {
     ext == ".gif"
   }
   
