@@ -21,10 +21,10 @@ struct ThreadView: View {
   
   var body: some View {
     List(posts){post in
-      PostView(board:board, post:post)
+      PostView(board:board, post:post).listRowInsets(EdgeInsets())
     }
-    .navigationBarTitleDisplayMode(.inline)
     .listStyle(.plain)
+    .navigationBarTitleDisplayMode(.inline)
     .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
       collectionView.isPrefetchingEnabled = true
       collectionView.prefetchDataSource = self.prefetcher

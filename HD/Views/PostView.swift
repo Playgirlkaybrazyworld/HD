@@ -14,8 +14,10 @@ struct PostView: View {
   let post: Post
   var body: some View {
     ScrollView {
-      VStack(alignment:.leading) {
-        Text("\(post.no) \(subject)")
+      VStack(alignment:.leading, spacing: 0) {
+        if let subject = self.subject {
+          Text(subject).padding()
+        }
         if let tim = post.tim {
           if let ext = post.ext {
             ImageView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
@@ -25,16 +27,17 @@ struct PostView: View {
         }
         if let com = post.com {
           Text(HTMLString(html:com).asSafeMarkdownAttributedString)
+          .padding()
         }
       }
     }
   }
   
-  var subject: String {
+  var subject: String? {
     if let sub = post.sub {
       return HTMLString(html: sub).asRawText
     }
-    return ""
+    return nil
   }
 }
 
