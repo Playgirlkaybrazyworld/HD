@@ -35,6 +35,8 @@
 		36EC2EF429C7F12A0012F438 /* HTMLString in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF329C7F12A0012F438 /* HTMLString */; };
 		36EC2EF929C815FC0012F438 /* SwiftyGif in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF829C815FC0012F438 /* SwiftyGif */; };
 		36EC2EFB29C816720012F438 /* AnimatedGIFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EC2EFA29C816720012F438 /* AnimatedGIFView.swift */; };
+		36EC2EFE29C8295C0012F438 /* VLCView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36EC2EFD29C8295C0012F438 /* VLCView.swift */; };
+		36EC2F0129C82C810012F438 /* VLCKitSPM in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2F0029C82C810012F438 /* VLCKitSPM */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +61,7 @@
 		366B689329BD2A8F00B5BC0E /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		366B689529BD30B300B5BC0E /* BoardsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListView.swift; sourceTree = "<group>"; };
 		36EC2EFA29C816720012F438 /* AnimatedGIFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedGIFView.swift; sourceTree = "<group>"; };
+		36EC2EFD29C8295C0012F438 /* VLCView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLCView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +75,7 @@
 				366B689229BD270700B5BC0E /* Env in Frameworks */,
 				3656CEFB29B984CF00C64299 /* NukeUI in Frameworks */,
 				3656CEEF29B971AC00C64299 /* Introspect in Frameworks */,
+				36EC2F0129C82C810012F438 /* VLCKitSPM in Frameworks */,
 				3656CEFD29B984CF00C64299 /* NukeVideo in Frameworks */,
 				3656CED229B83F8400C64299 /* Network in Frameworks */,
 				3656CEEC29B85B7300C64299 /* SwiftSoup in Frameworks */,
@@ -145,6 +149,7 @@
 				3656CEDE29B84E7600C64299 /* ThreadRowView.swift */,
 				3656CEDC29B8498800C64299 /* ThreadView.swift */,
 				3656CEE229B850D400C64299 /* ThumbnailView.swift */,
+				36EC2EFD29C8295C0012F438 /* VLCView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -186,6 +191,7 @@
 				36EC2EF029C7EF990012F438 /* FourChan */,
 				36EC2EF329C7F12A0012F438 /* HTMLString */,
 				36EC2EF829C815FC0012F438 /* SwiftyGif */,
+				36EC2F0029C82C810012F438 /* VLCKitSPM */,
 			);
 			productName = HD;
 			productReference = 3656CEB929B6FCF000C64299 /* HD.app */;
@@ -222,6 +228,7 @@
 				36EC2EEF29C7EF990012F438 /* XCRemoteSwiftPackageReference "FourChanAPI" */,
 				36EC2EF229C7F12A0012F438 /* XCRemoteSwiftPackageReference "HTMLString" */,
 				36EC2EF729C815FC0012F438 /* XCRemoteSwiftPackageReference "SwiftyGif" */,
+				36EC2EFF29C82C810012F438 /* XCRemoteSwiftPackageReference "vlckit-spm" */,
 			);
 			productRefGroup = 3656CEBA29B6FCF000C64299 /* Products */;
 			projectDirPath = "";
@@ -252,6 +259,7 @@
 				3656CED729B842F500C64299 /* BoardsRowView.swift in Sources */,
 				36EC2EFB29C816720012F438 /* AnimatedGIFView.swift in Sources */,
 				3656CEDF29B84E7600C64299 /* ThreadRowView.swift in Sources */,
+				36EC2EFE29C8295C0012F438 /* VLCView.swift in Sources */,
 				3656CED929B8448D00C64299 /* CatalogView.swift in Sources */,
 				3656CEF129B9730500C64299 /* ThreadViewPrefetcher.swift in Sources */,
 				366B688F29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift in Sources */,
@@ -514,6 +522,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		36EC2EFF29C82C810012F438 /* XCRemoteSwiftPackageReference "vlckit-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:jackpal/vlckit-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -569,6 +585,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 36EC2EF729C815FC0012F438 /* XCRemoteSwiftPackageReference "SwiftyGif" */;
 			productName = SwiftyGif;
+		};
+		36EC2F0029C82C810012F438 /* VLCKitSPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 36EC2EFF29C82C810012F438 /* XCRemoteSwiftPackageReference "vlckit-spm" */;
+			productName = VLCKitSPM;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

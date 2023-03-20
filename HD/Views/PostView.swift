@@ -23,11 +23,13 @@ struct PostView: View {
             if isDisplayable(ext) {
               ImageView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
             } else if isGif(ext) {
-              AnimatedGifView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
+              AnimatedGifView(board:board, tim: tim, ext: ext)
                 .aspectRatio(CGFloat(post.w!) / CGFloat(post.h!), contentMode: .fill)
                 .frame(maxWidth:CGFloat(post.w!), maxHeight:CGFloat(post.h!))
             } else if isAnimatable(ext) {
-              Text("Webm!!")
+              VLCView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
+                .aspectRatio(CGFloat(post.w!) / CGFloat(post.h!), contentMode: .fill)
+                .frame(maxWidth:CGFloat(post.w!), maxHeight:CGFloat(post.h!))
             } else {
               ThumbnailView(board:board, tim: tim, width: post.tn_w, height: post.tn_h)
             }

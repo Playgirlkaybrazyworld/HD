@@ -7,7 +7,7 @@ struct AnimatedGifView: UIViewRepresentable {
   let tim: Int
   let ext: String
 
-  init(board: String, tim: Int, ext: String, width: Int?, height: Int?) {
+  init(board: String, tim: Int, ext: String) {
     self.board = board
     self.tim = tim
     self.ext = ext
