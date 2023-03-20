@@ -32,11 +32,15 @@ final class ThreadViewPrefetcher: NSObject, ObservableObject, UICollectionViewDa
   
   private func getImageURL(_ post: Post) -> URL? {
     guard let tim = post.tim else { return nil }
-    if let ext = post.ext {
+    if let ext = post.ext, isPrefetchable(ext) {
       return client.makeURL(endpoint: .image(board: board, tim: tim, ext: ext))
     } else {
       return client.makeURL(endpoint: .thumbnail(board: board, tim: tim))
     }
+  }
+  
+  private func isPrefetchable(_ ext: String) -> Bool {
+    ext == ".jpg" || ext == ".png"
   }
 }
 
