@@ -17,10 +17,10 @@ struct ThumbnailView: View {
   let tim: Int
   let maxSize: CGFloat
   let aspectRatio: CGFloat?
-  init(board: String, tim: Int, width: Int?, height: Int?, maxSize:CGFloat = .infinity) {
+  init(board: String, tim: Int, width: Int?, height: Int?, maxSize:CGFloat? = nil) {
     self.board = board
     self.tim = tim
-    self.maxSize = maxSize
+    self.maxSize = maxSize ?? CGFloat(max(width ?? 0, height ?? 0))
     if let width, let height, height > 0 {
       aspectRatio = CGFloat(width)/CGFloat(height)
     } else {
