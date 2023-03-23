@@ -27,16 +27,24 @@ struct VLCView: UIViewRepresentable {
   }
 }
 
-class PlayerUIView: UIView, VLCMediaPlayerDelegate {
-  private let mediaPlayer = VLCMediaPlayer()
+class PlayerUIView: UIView, VLCMediaListPlayerDelegate {
+  var mediaListPlayer : VLCMediaListPlayer! = nil
   
   init(frame: CGRect, url: URL) {
     super.init(frame: frame)
-        
-    mediaPlayer.media = VLCMedia(url: url)
-    mediaPlayer.delegate = self
-    mediaPlayer.drawable = self
-    mediaPlayer.play()
+    
+    let media = VLCMedia(url: url)
+
+    let mediaList = VLCMediaList()
+    mediaList.add(media)
+
+    mediaListPlayer = VLCMediaListPlayer(drawable:self)
+    mediaListPlayer.delegate = self
+
+    mediaListPlayer.mediaList = mediaList
+
+    mediaListPlayer.repeatMode = .repeatCurrentItem
+    mediaListPlayer.play(media)
   }
   
   required init?(coder: NSCoder) {
