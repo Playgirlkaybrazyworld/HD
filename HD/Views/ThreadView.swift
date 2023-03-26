@@ -13,6 +13,7 @@ import UIKit
 
 struct ThreadView: View {
   @EnvironmentObject private var client: Client
+  let title: String
   let board: String
   let threadNo: Int
   @State private var posts: Posts = []
@@ -27,6 +28,7 @@ struct ThreadView: View {
       .listRowInsets(EdgeInsets())
     }
     .listStyle(.plain)
+    .navigationTitle(title)
     .navigationBarTitleDisplayMode(.inline)
     .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
       collectionView.isPrefetchingEnabled = true

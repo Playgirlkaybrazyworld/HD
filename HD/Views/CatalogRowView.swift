@@ -7,6 +7,7 @@
 
 import FourChan
 import HTMLString
+import SwiftSoup
 import SwiftUI
 
 struct CatalogRowView: View {
@@ -17,14 +18,21 @@ struct CatalogRowView: View {
       if let tim = thread.tim {
         ThumbnailView(board: board, tim: tim, width: thread.tn_w, height: thread.tn_h, maxSize: 100.0)
       }
-      if let sub = thread.sub {
-        Text(HTMLString(html:sub).asSafeMarkdownAttributedString)
-      } else if let com = thread.com {
-        Text(HTMLString(html:com).asSafeMarkdownAttributedString).lineLimit(3)
-      } else {
-        Text("\(thread.id)")
+      Text(HTMLString(html:thread.title).asSafeMarkdownAttributedString)
+      .lineLimit(3)
+    }
+  }
+  }
+
+extension Post {
+  var title: String {
+    if let escapedText = sub ?? com {
+      if let unescapedText =
+          try? Entities.unescape(escapedText) {
+        return unescapedText
       }
     }
+    return "\(id)"
   }
 }
 

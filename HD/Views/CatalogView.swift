@@ -22,7 +22,9 @@ struct CatalogView: View {
 
   var body: some View {
     List(threads){ thread in
-      NavigationLink(value: RouterDestination.thread(board:board, threadNo:thread.no)) {
+      NavigationLink(value: RouterDestination.thread(
+        title:thread.title,
+        board:board, threadNo:thread.no)) {
         CatalogRowView(board:board, thread: thread)
       }
     }

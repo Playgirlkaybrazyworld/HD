@@ -4,7 +4,7 @@ import SwiftUI
 public enum RouterDestination: Hashable, Codable {
   case boards
   case catalog(board: String)
-  case thread(board: String, threadNo: Int)
+  case thread(title: String, board: String, threadNo: Int)
 }
 
 @MainActor

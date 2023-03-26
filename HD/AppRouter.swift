@@ -11,8 +11,8 @@ extension View {
         Text("boards")
       case let .catalog(board):
         CatalogView(board: board)
-      case let .thread(board, threadNo):
-        ThreadView(board:board, threadNo: threadNo)
+      case let .thread(title, board, threadNo):
+        ThreadView(title:title, board:board, threadNo: threadNo)
       }
     }
   }
