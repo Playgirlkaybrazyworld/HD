@@ -20,11 +20,12 @@ struct PostView: View {
           Text(subject).padding()
         }
         if hasImage {
-          HStack {
-            Spacer()
-            image
-            Spacer()
-          }
+          image
+            .frame(
+              maxWidth: .infinity,
+              maxHeight: .infinity,
+              alignment: .center
+            )
         }
         if let com = post.com {
           Text(HTMLString(html:com).asSafeMarkdownAttributedString)
