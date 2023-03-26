@@ -21,7 +21,10 @@ struct ThreadView: View {
   
   var body: some View {
     List(posts){post in
-      PostView(board:board, post:post).listRowInsets(EdgeInsets())
+      PostView(board:board,
+               threadNo:threadNo,
+               post:post)
+      .listRowInsets(EdgeInsets())
     }
     .listStyle(.plain)
     .navigationBarTitleDisplayMode(.inline)

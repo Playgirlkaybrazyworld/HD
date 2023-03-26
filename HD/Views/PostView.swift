@@ -11,6 +11,7 @@ import SwiftUI
 
 struct PostView: View {
   let board: String
+  let threadNo: Int
   let post: Post
   var body: some View {
     ScrollView {
@@ -18,20 +19,67 @@ struct PostView: View {
         if let subject = self.subject {
           Text(subject).padding()
         }
-        image
+        if hasImage {
+          HStack {
+            Spacer()
+            image
+            Spacer()
+          }
+        }
         if let com = post.com {
           Text(HTMLString(html:com).asSafeMarkdownAttributedString)
           .padding()
         }
       }
     }
+    .contextMenu(
+      ContextMenu {
+        if let imageURL = imageURL {
+          ShareLink(item: imageURL, message: Text(effectiveFilename))
+        }
+        Button(action: {
+          UIApplication.shared.open(
+            FourChanWebEndpoint.post(
+              board: self.board,
+              thread: self.threadNo,
+              post: self.post.id
+            ).url
+          )
+        }
+        ) {
+          Image(systemName: "globe")
+          Text("Show post")
+        }
+      })
+  }
+  
+  var hasImage : Bool {
+    post.tim != nil
+  }
+  
+  var effectiveFilename: String {
+    if let filename = post.filename {
+      return filename
+    }
+    if let tim = post.tim {
+      if let ext = post.ext {
+        return "\(tim).\(ext)"
+      }
+      return "\(tim)"
+    }
+    return "post \(post.id)"
+  }
+  
+  var imageURL : URL? {
+    guard let tim = post.tim else {
+      return nil
+    }
+    return FourChanAPIEndpoint.image(board:board, tim:tim, ext:post.ext ?? "").url()
   }
   
   @ViewBuilder
   var image: some View {
-    HStack{
       if let tim = post.tim {
-        Spacer()
         if let ext = post.ext {
           if isDisplayable(ext) {
             ImageView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
@@ -49,10 +97,7 @@ struct PostView: View {
         } else {
           ThumbnailView(board:board, tim: tim, width: post.tn_w, height: post.tn_h)
         }
-        Spacer()
-      }
     }
-
   }
   
   var subject: String? {
