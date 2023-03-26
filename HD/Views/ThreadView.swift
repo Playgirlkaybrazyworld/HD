@@ -34,6 +34,11 @@ struct ThreadView: View {
       collectionView.isPrefetchingEnabled = true
       collectionView.prefetchDataSource = self.prefetcher
     }
+    .introspectNavigationController { navigationController in
+      navigationController.hidesBarsOnSwipe = true
+    }
+    // Ideally we would only hide this when swiping.
+    .statusBar(hidden: true)
     .onAppear {
       Task {
         self.prefetcher.board = board
