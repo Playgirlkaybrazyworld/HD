@@ -18,35 +18,41 @@ struct PostView: View {
         if let subject = self.subject {
           Text(subject).padding()
         }
-        HStack{
-          Spacer()
-          if let tim = post.tim {
-            if let ext = post.ext {
-              if isDisplayable(ext) {
-                ImageView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
-              } else if isGif(ext) {
-                AnimatedGifView(board:board, tim: tim, ext: ext)
-                  .aspectRatio(CGFloat(post.w!) / CGFloat(post.h!), contentMode: .fill)
-                  .frame(maxWidth:CGFloat(post.w!), maxHeight:CGFloat(post.h!))
-              } else if isAnimatable(ext) {
-                VLCView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
-                  .aspectRatio(CGFloat(post.w!) / CGFloat(post.h!), contentMode: .fill)
-                  .frame(maxWidth:CGFloat(post.w!), maxHeight:CGFloat(post.h!))
-              } else {
-                ThumbnailView(board:board, tim: tim, width: post.tn_w, height: post.tn_h)
-              }
-            } else {
-              ThumbnailView(board:board, tim: tim, width: post.tn_w, height: post.tn_h)
-            }
-          }
-          Spacer()
-        }
+        image
         if let com = post.com {
           Text(HTMLString(html:com).asSafeMarkdownAttributedString)
           .padding()
         }
       }
     }
+  }
+  
+  @ViewBuilder
+  var image: some View {
+    HStack{
+      if let tim = post.tim {
+        Spacer()
+        if let ext = post.ext {
+          if isDisplayable(ext) {
+            ImageView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
+          } else if isGif(ext) {
+            AnimatedGifView(board:board, tim: tim, ext: ext)
+              .aspectRatio(CGFloat(post.w!) / CGFloat(post.h!), contentMode: .fill)
+              .frame(maxWidth:CGFloat(post.w!), maxHeight:CGFloat(post.h!))
+          } else if isAnimatable(ext) {
+            VLCView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
+              .aspectRatio(CGFloat(post.w!) / CGFloat(post.h!), contentMode: .fill)
+              .frame(maxWidth:CGFloat(post.w!), maxHeight:CGFloat(post.h!))
+          } else {
+            ThumbnailView(board:board, tim: tim, width: post.tn_w, height: post.tn_h)
+          }
+        } else {
+          ThumbnailView(board:board, tim: tim, width: post.tn_w, height: post.tn_h)
+        }
+        Spacer()
+      }
+    }
+
   }
   
   var subject: String? {
