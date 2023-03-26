@@ -21,6 +21,10 @@ struct PostView: View {
         }
         if hasImage {
           image
+            // First frame ensures image doesn't grow larger than
+            // native resolution
+            .frame(maxWidth:w, maxHeight:h)
+            // Second frame centers image in list.
             .frame(
               maxWidth: .infinity,
               maxHeight: .infinity,
@@ -56,6 +60,26 @@ struct PostView: View {
   
   var hasImage : Bool {
     post.tim != nil
+  }
+  
+  var w : CGFloat? {
+    if let w = post.w {
+      return CGFloat(w)
+    }
+    if let tn_w = post.tn_w {
+      return CGFloat(tn_w)
+    }
+    return nil
+  }
+  
+  var h : CGFloat? {
+    if let h = post.h {
+      return CGFloat(h)
+    }
+    if let tn_h = post.tn_h {
+      return CGFloat(tn_h)
+    }
+    return nil
   }
   
   var effectiveFilename: String {
