@@ -51,4 +51,10 @@ class PlayerUIView: UIView, VLCMediaListPlayerDelegate {
     fatalError("init(coder:) has not been implemented")
   }
   
+  override func willMove(toSuperview newSuperview: UIView?) {
+    if newSuperview == nil {
+      mediaListPlayer.stop()
+    }
+  }
 }
+
