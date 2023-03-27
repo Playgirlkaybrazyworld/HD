@@ -17,7 +17,7 @@ struct ThreadView: View {
   let board: String
   let threadNo: Int
   @State private var posts: Posts = []
-  @State private var loading: Bool = true
+  @State private var loading: Bool = false
   
   @StateObject private var prefetcher = ThreadViewPrefetcher()
   
@@ -48,16 +48,30 @@ struct ThreadView: View {
         self.prefetcher.board = board
         self.prefetcher.client = client
         while !Task.isCancelled {
-          let thread: ChanThread? = try? await client.get(endpoint: .thread(board:board, no:threadNo))
-          let posts = thread?.posts ?? []
-          self.prefetcher.posts = posts
-          withAnimation {
-            loading = false
-            self.posts = posts
-          }
+          await refresh()
           try await Task.sleep(nanoseconds:30 * 1_000_000_000)
         }
       }
+    }
+  }
+  
+  func refresh() async {
+    if loading {
+      print("already loading")
+      return
+    }
+    loading = true
+    do {
+      let thread: ChanThread? = try await client.get(endpoint: .thread(board:board, no:threadNo))
+      let posts = thread?.posts ?? []
+      self.prefetcher.posts = posts
+      withAnimation {
+        loading = false
+        self.posts = posts
+      }
+    } catch {
+      print("Error loading \(board)/\(threadNo): \(error)")
+      loading = false
     }
   }
 }

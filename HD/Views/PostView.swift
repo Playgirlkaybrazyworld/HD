@@ -71,7 +71,6 @@ struct PostView: View {
     if post.h == 0 {
       return (width, height, CGFloat(1.0))
     }
-    print(post.id, width, height, width / height)
     return (width, height, width / height)
   }
     
