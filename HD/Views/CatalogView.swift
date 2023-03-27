@@ -16,18 +16,24 @@ struct CatalogView: View {
   @EnvironmentObject private var client: Client
   let board: String
   @State private var threads: Posts = []
-  
+  @SceneStorage("search") private var searchText = ""
+
   @StateObject private var prefetcher = CatalogViewPrefetcher()
   let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
   var body: some View {
-    List(threads){ thread in
+    let filteredThreads = filteredThreads
+    if filteredThreads.isEmpty {
+      Text("No threads match search text.")
+    }
+    List(filteredThreads){ thread in
       NavigationLink(value: RouterDestination.thread(
         title:thread.title,
         board:board, threadNo:thread.no)) {
         CatalogRowView(board:board, thread: thread)
       }
     }
+    .searchable(text: $searchText)
     .navigationTitle(board)
     .navigationBarTitleDisplayMode(.inline)
     .listStyle(.plain)
@@ -50,6 +56,14 @@ struct CatalogView: View {
         }
       }
     }
+  }
+  
+  var filteredThreads: [Post] {
+      if searchText.isEmpty {
+          return threads
+      } else {
+        return threads.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+      }
   }
 }
 
