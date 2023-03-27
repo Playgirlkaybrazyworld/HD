@@ -16,9 +16,6 @@ struct PostView: View {
   var body: some View {
     ScrollView {
       VStack(alignment:.leading, spacing: 0) {
-        if let subject = self.subject {
-          Text(subject).padding()
-        }
         if hasImage {
           image
             // First frame ensures image doesn't grow larger than
@@ -33,7 +30,8 @@ struct PostView: View {
         }
         if let com = post.com {
           Text(HTMLString(html:com).asSafeMarkdownAttributedString)
-          .padding()
+            .font(.caption)
+          .padding(8)
         }
       }
     }

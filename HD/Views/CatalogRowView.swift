@@ -7,7 +7,6 @@
 
 import FourChan
 import HTMLString
-import SwiftSoup
 import SwiftUI
 
 struct CatalogRowView: View {
@@ -26,11 +25,8 @@ struct CatalogRowView: View {
 
 extension Post {
   var title: String {
-    if let escapedText = sub ?? com {
-      if let unescapedText =
-          try? Entities.unescape(escapedText) {
-        return unescapedText
-      }
+    if let title = sub ?? com {
+      return HTMLString(html:title).asRawText
     }
     return "\(id)"
   }
