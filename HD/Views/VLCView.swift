@@ -5,9 +5,7 @@
 //  Created by Jack Palevich on 3/19/23.
 //
 
-import Foundation
 import SwiftUI
-import UIKit
 import VLCKitSPM
 
 struct VLCView: UIViewRepresentable {
@@ -39,9 +37,9 @@ struct VLCView: UIViewRepresentable {
     let vHeight = CGFloat(height)
     
     let scale = min(pWidth / vWidth, pHeight / vHeight)
+    let displayScale = context.environment[keyPath: \.displayScale]
     func snap(_ a:CGFloat) -> CGFloat {
-      let scale = UIScreen.main.scale
-      return round(a*scale)/scale
+      return round(a*displayScale)/displayScale
     }
     let size = CGSize(width:snap(scale * vWidth), height: snap(scale * vHeight))
     return size
