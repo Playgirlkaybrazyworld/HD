@@ -104,7 +104,10 @@ struct PostView: View {
           } else if isGif(ext) {
             AnimatedGifView(board:board, tim: tim, ext: ext)
           } else if isVLCViewable(ext) {
-            VLCView(board:board, postNo: post.id, tim: tim, ext: ext, width: post.w, height: post.h)
+            let width = post.w ?? 160
+            let height = post.h ?? 160
+            let mediaURL = FourChanAPIEndpoint.image(board:board, tim:tim, ext:ext).url()
+            VLCView(mediaURL: mediaURL, width: width, height: height)
           } else {
             ThumbnailView(board:board, tim: tim, width: post.tn_w, height: post.tn_h)
           }
