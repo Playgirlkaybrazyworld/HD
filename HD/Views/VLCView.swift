@@ -64,6 +64,9 @@ class VLCViewController: UIViewController, VLCMediaListPlayerDelegate {
     mediaList.add(media)
     mediaListPlayer.mediaList = mediaList
     mediaListPlayer.play(media)
+    if let vlcAudio = mediaListPlayer.mediaPlayer.audio {
+      vlcAudio.volume = 0
+    }
   }
   
   override func viewWillDisappear(_ animated: Bool) {
