@@ -1,85 +1,62 @@
 //
-//  VLCKitView.swift
+//  VLCView.swift
 //  HD
 //
-//  Created by Jack Palevich on 3/19/23.
+//  Created by Jack Palevich on 3/27/23.
 //
 
 import SwiftUI
 import VLCKitSPM
+import UIKit
 
-struct VLCView: UIViewRepresentable {
+struct VLCView: UIViewControllerRepresentable {
+  typealias UIViewControllerType = VLCViewController
+  
   let mediaURL: URL
   let width: Int
   let height: Int
-    
-  func updateUIView(_ uiView: PlayerUIView, context: UIViewRepresentableContext<VLCView>) {
+  
+  func makeUIViewController(context: Context) -> VLCViewController {
+    let vc = VLCViewController()
+    vc.mediaURL = mediaURL
+    vc.width = width
+    vc.height = height
+    return vc
   }
   
-  func makeUIView(context: Context) -> PlayerUIView {
-    return PlayerUIView(url: mediaURL)
-  }
-  
-  func sizeThatFits(
-      _ proposal: ProposedViewSize,
-      uiView: PlayerUIView, context: Context
-  ) -> CGSize? {
-    guard
-        let pWidth = proposal.width,
-        let pHeight = proposal.height,
-        pWidth != 0,
-        pHeight != 0,
-        width != 0,
-        height != 0
-    else { return nil }
-    
-    let vWidth = CGFloat(width)
-    let vHeight = CGFloat(height)
-    
-    let scale = min(pWidth / vWidth, pHeight / vHeight)
-    let displayScale = context.environment[keyPath: \.displayScale]
-    func snap(_ a:CGFloat) -> CGFloat {
-      return round(a*displayScale)/displayScale
-    }
-    let size = CGSize(width:snap(scale * vWidth), height: snap(scale * vHeight))
-    return size
+  func updateUIViewController(_ uiViewController: VLCViewController, context: Context) {
+    // Don't need to do anything
   }
 }
 
-class PlayerUIView: UIView, VLCMediaListPlayerDelegate {
-  var url: URL
-  var mediaListPlayer : VLCMediaListPlayer! = nil
-  
-  init(url: URL) {
-    self.url = url
-    super.init(frame: .zero)
-  }
-  
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-    
-  override func willMove(toSuperview newSuperview: UIView?) {
-    if newSuperview == nil {
-      // Avoids memory leaks.
-      if mediaListPlayer != nil {
-        mediaListPlayer.stop()
-        mediaListPlayer.delegate = nil
-        mediaListPlayer = nil
-      }
-    }
-    super.willMove(toSuperview:newSuperview)
-    if newSuperview != nil {
-      mediaListPlayer = VLCMediaListPlayer(drawable:self)
-      mediaListPlayer.delegate = self
-      mediaListPlayer.repeatMode = .repeatCurrentItem
+class VLCViewController: UIViewController, VLCMediaListPlayerDelegate {
+  var mediaURL: URL!
+  var width: Int = 0
+  var height: Int = 0
 
-      let media = VLCMedia(url: url)
-      let mediaList = VLCMediaList()
-      mediaList.add(media)
-      mediaListPlayer.mediaList = mediaList
-      mediaListPlayer.play(media)
+  var mediaListPlayer: VLCMediaListPlayer!
+
+  override func loadView() {
+    view = UIView()
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    mediaListPlayer = VLCMediaListPlayer(drawable:view)
+    mediaListPlayer.delegate = self
+    mediaListPlayer.repeatMode = .repeatCurrentItem
+    
+    let media = VLCMedia(url: mediaURL)
+    let mediaList = VLCMediaList()
+    mediaList.add(media)
+    mediaListPlayer.mediaList = mediaList
+    mediaListPlayer.play(media)
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    if mediaListPlayer != nil {
+      mediaListPlayer.stop()
+      mediaListPlayer.delegate = nil
+      mediaListPlayer = nil
     }
   }
 }
-
