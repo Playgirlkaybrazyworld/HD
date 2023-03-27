@@ -9,13 +9,15 @@ struct BoardsListView: View {
   @State private var boardIDs: [String] = []
   @State private var boardDict: [String: Board] = [:]
   @State var selection: String?
+  @SceneStorage("boards_search") private var searchText = ""
 
   var body: some View {
-    List(boardIDs, id:\.self, selection: $selection) { boardID in
+    List(filteredBoardIDs, id:\.self, selection: $selection) { boardID in
       NavigationLink(value: RouterDestination.catalog(board: boardID)) {
         BoardsRowView(board:boardDict[boardID]!)
       }
     }
+    .searchable(text: $searchText)
     .navigationTitle("Boards")
     .onAppear {
       Task {
@@ -29,4 +31,14 @@ struct BoardsListView: View {
     }
   }
   
+  var filteredBoardIDs: [String] {
+      if searchText.isEmpty {
+          return boardIDs
+      } else {
+        return boardIDs.filter { boardID in
+          boardID.localizedCaseInsensitiveContains(searchText) ||
+          boardDict[boardID]?.title.localizedCaseInsensitiveContains(searchText) ?? false
+        }
+      }
+  }
 }

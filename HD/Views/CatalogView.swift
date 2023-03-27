@@ -16,7 +16,7 @@ struct CatalogView: View {
   @EnvironmentObject private var client: Client
   let board: String
   @State private var threads: Posts = []
-  @SceneStorage("search") private var searchText = ""
+  @SceneStorage("catalog_search") private var searchText = ""
 
   @StateObject private var prefetcher = CatalogViewPrefetcher()
 
