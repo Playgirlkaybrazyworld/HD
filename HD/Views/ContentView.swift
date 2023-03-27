@@ -20,23 +20,23 @@ struct ContentView: View {
       BoardsListView()
         .withAppRouter()
     }
-      .environmentObject(client)
-      .environmentObject(routerPath)
-      .onChange(of: scenePhase) { phase in
-        switch phase {
-        case .active:
-          // restore state if present
-          if let routerPathData = routerPathData {
-            self.routerPath.restore(from: routerPathData)
-          }
-        case .background:
-          if let updatedRouterPathData = routerPath.encoded() {
-            routerPathData = updatedRouterPathData
-          }
-        default:
-          break
+    .environmentObject(client)
+    .environmentObject(routerPath)
+    .onChange(of: scenePhase) { phase in
+      switch phase {
+      case .active:
+        // restore state if present
+        if let routerPathData = routerPathData {
+          self.routerPath.restore(from: routerPathData)
         }
+      case .background:
+        if let updatedRouterPathData = routerPath.encoded() {
+          routerPathData = updatedRouterPathData
+        }
+      default:
+        break
       }
+    }
   }
   
 }
