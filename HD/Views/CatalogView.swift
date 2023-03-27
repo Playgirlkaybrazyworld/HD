@@ -32,6 +32,9 @@ struct CatalogView: View {
         CatalogRowView(board:board, thread: thread)
       }
     }
+    .refreshable {
+      await refresh()
+    }
     .searchable(text: $searchText)
     .navigationTitle(board)
     .navigationBarTitleDisplayMode(.inline)
@@ -44,16 +47,21 @@ struct CatalogView: View {
       Task {
         self.prefetcher.board = board
         self.prefetcher.client = client
-        while !Task.isCancelled {
-          let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
-          let threads = catalog.flatMap(\.threads)
-          self.prefetcher.posts = threads
-          withAnimation {
-            self.threads = threads
-          }
-          try await Task.sleep(nanoseconds:30 * 1_000_000_000)
-        }
+        await refresh()
       }
+    }
+  }
+  
+  func refresh() async {
+    var threads:[Post] = []
+    do {
+      let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
+      threads = catalog.flatMap(\.threads)
+    } catch {
+    }
+    self.prefetcher.posts = threads
+    withAnimation {
+      self.threads = threads
     }
   }
   
