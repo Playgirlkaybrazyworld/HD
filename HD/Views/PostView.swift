@@ -19,6 +19,7 @@ struct PostView: View {
         if hasImage {
           let (width, height, aspectRatio) = metrics
           image
+            .blurWhenNotActive(radius:25.0)
             // preserve aspect ratio
             .aspectRatio(aspectRatio, contentMode: .fill)
             // No larger than original size

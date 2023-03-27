@@ -20,7 +20,6 @@ struct ContentView: View {
       BoardsListView()
         .withAppRouter()
     }
-    .blurWhenNotActive(radius:25.0)
     .environmentObject(client)
     .environmentObject(routerPath)
     .onChange(of: scenePhase) { phase in
