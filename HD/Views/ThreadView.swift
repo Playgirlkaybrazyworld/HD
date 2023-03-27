@@ -21,6 +21,9 @@ struct ThreadView: View {
   @StateObject private var prefetcher = ThreadViewPrefetcher()
   
   var body: some View {
+    if posts.isEmpty {
+      Text("No posts.")
+    }
     List(posts){post in
       PostView(board:board,
                threadNo:threadNo,
