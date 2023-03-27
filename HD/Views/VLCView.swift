@@ -72,6 +72,7 @@ class PlayerUIView: UIView, VLCMediaListPlayerDelegate {
   
   override func willMove(toSuperview newSuperview: UIView?) {
     if newSuperview == nil {
+      // Avoids memory leaks.
       mediaListPlayer.stop()
       mediaListPlayer.delegate = nil
       mediaListPlayer = nil
