@@ -41,7 +41,7 @@ class VLCViewController: UIViewController, VLCMediaListPlayerDelegate {
   }
   
   override func viewDidAppear(_ animated: Bool) {
-    mediaListPlayer = VLCMediaListPlayer(drawable:view)
+    mediaListPlayer = VLCMediaListPlayer(drawable:view!)
     mediaListPlayer.delegate = self
     mediaListPlayer.repeatMode = .repeatCurrentItem
     
