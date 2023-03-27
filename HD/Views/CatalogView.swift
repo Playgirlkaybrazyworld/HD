@@ -19,7 +19,6 @@ struct CatalogView: View {
   @SceneStorage("search") private var searchText = ""
 
   @StateObject private var prefetcher = CatalogViewPrefetcher()
-  let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
   var body: some View {
     let filteredThreads = filteredThreads
