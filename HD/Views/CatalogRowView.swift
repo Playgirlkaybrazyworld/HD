@@ -18,10 +18,10 @@ struct CatalogRowView: View {
         ThumbnailView(board: board, tim: tim, width: thread.tn_w, height: thread.tn_h, maxSize: 100.0)
       }
       Text(HTMLString(html:thread.title).asSafeMarkdownAttributedString)
-      .lineLimit(3)
+        .lineLimit(3)
     }
   }
-  }
+}
 
 extension Post {
   var title: String {

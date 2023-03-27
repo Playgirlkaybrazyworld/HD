@@ -6,6 +6,7 @@ struct AnimatedGifView: UIViewRepresentable {
   let board: String
   let tim: Int
   let ext: String
+  @Environment(\.scenePhase) var scenePhase
 
   init(board: String, tim: Int, ext: String) {
     self.board = board
@@ -20,7 +21,15 @@ struct AnimatedGifView: UIViewRepresentable {
   }
   
   func updateUIView(_ uiView: UIImageView, context: Context) {
-    uiView.setGifFromURL(url)
+    if case .active = scenePhase {
+      if !uiView.isAnimating {
+        uiView.startAnimatingGif()
+      }
+    } else {
+      if uiView.isAnimating {
+        uiView.stopAnimatingGif()
+      }
+    }
   }
   
   private var url:URL {

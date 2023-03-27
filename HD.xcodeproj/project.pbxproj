@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		363AF29129D1EEDB0030B746 /* BlurInBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363AF29029D1EEDB0030B746 /* BlurInBackground.swift */; };
 		3656CEBD29B6FCF000C64299 /* HDApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3656CEBC29B6FCF000C64299 /* HDApp.swift */; };
 		3656CEC129B6FCF100C64299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3656CEC029B6FCF100C64299 /* Assets.xcassets */; };
 		3656CEC429B6FCF100C64299 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3656CEC329B6FCF100C64299 /* Preview Assets.xcassets */; };
@@ -40,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		363AF29029D1EEDB0030B746 /* BlurInBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurInBackground.swift; sourceTree = "<group>"; };
 		3656CEB929B6FCF000C64299 /* HD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3656CEBC29B6FCF000C64299 /* HDApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDApp.swift; sourceTree = "<group>"; };
 		3656CEC029B6FCF100C64299 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				3656CEDC29B8498800C64299 /* ThreadView.swift */,
 				3656CEE229B850D400C64299 /* ThumbnailView.swift */,
 				36EC2EFD29C8295C0012F438 /* VLCView.swift */,
+				363AF29029D1EEDB0030B746 /* BlurInBackground.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				36EC2EFE29C8295C0012F438 /* VLCView.swift in Sources */,
 				3656CED929B8448D00C64299 /* CatalogView.swift in Sources */,
 				3656CEF129B9730500C64299 /* ThreadViewPrefetcher.swift in Sources */,
+				363AF29129D1EEDB0030B746 /* BlurInBackground.swift in Sources */,
 				366B688F29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift in Sources */,
 				3656CEE529B853EF00C64299 /* ImageView.swift in Sources */,
 				3656CED529B8429200C64299 /* ContentView.swift in Sources */,
