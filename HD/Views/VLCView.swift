@@ -17,7 +17,7 @@ struct VLCView: UIViewRepresentable {
   }
   
   func makeUIView(context: Context) -> PlayerUIView {
-    return PlayerUIView(frame: .zero, url: mediaURL)
+    return PlayerUIView(url: mediaURL)
   }
   
   func sizeThatFits(
@@ -47,37 +47,39 @@ struct VLCView: UIViewRepresentable {
 }
 
 class PlayerUIView: UIView, VLCMediaListPlayerDelegate {
+  var url: URL
   var mediaListPlayer : VLCMediaListPlayer! = nil
   
-  init(frame: CGRect, url: URL) {
-    super.init(frame: frame)
-    
-    let media = VLCMedia(url: url)
-
-    let mediaList = VLCMediaList()
-    mediaList.add(media)
-
-    mediaListPlayer = VLCMediaListPlayer(drawable:self)
-    mediaListPlayer.delegate = self
-
-    mediaListPlayer.mediaList = mediaList
-
-    mediaListPlayer.repeatMode = .repeatCurrentItem
-    mediaListPlayer.play(media)
+  init(url: URL) {
+    self.url = url
+    super.init(frame: .zero)
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-  
+    
   override func willMove(toSuperview newSuperview: UIView?) {
     if newSuperview == nil {
       // Avoids memory leaks.
-      mediaListPlayer.stop()
-      mediaListPlayer.delegate = nil
-      mediaListPlayer = nil
+      if mediaListPlayer != nil {
+        mediaListPlayer.stop()
+        mediaListPlayer.delegate = nil
+        mediaListPlayer = nil
+      }
     }
     super.willMove(toSuperview:newSuperview)
+    if newSuperview != nil {
+      mediaListPlayer = VLCMediaListPlayer(drawable:self)
+      mediaListPlayer.delegate = self
+      mediaListPlayer.repeatMode = .repeatCurrentItem
+
+      let media = VLCMedia(url: url)
+      let mediaList = VLCMediaList()
+      mediaList.add(media)
+      mediaListPlayer.mediaList = mediaList
+      mediaListPlayer.play(media)
+    }
   }
 }
 
