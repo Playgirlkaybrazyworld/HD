@@ -11,7 +11,8 @@ import UIKit
 
 struct VLCView: UIViewControllerRepresentable {
   typealias UIViewControllerType = VLCViewController
-  
+  @Environment(\.scenePhase) private var scenePhase
+
   let mediaURL: URL
   let width: Int
   let height: Int
@@ -25,7 +26,19 @@ struct VLCView: UIViewControllerRepresentable {
   }
   
   func updateUIViewController(_ uiViewController: VLCViewController, context: Context) {
-    // Don't need to do anything
+    if let mediaListPlayer = uiViewController.mediaListPlayer,
+       let view = uiViewController.view {
+      if scenePhase == .active {
+        mediaListPlayer.play()
+        view.alpha = 1.0
+      } else {
+        mediaListPlayer.pause()
+        // Need to do this here rather than at the SwiftUI
+        // level. Otherwise 2nd time we go into the backgroun
+        // the view remains opaque.
+        view.alpha = 0.0
+      }
+    }
   }
 }
 
