@@ -17,7 +17,7 @@ struct ThreadView: View {
   let board: String
   let threadNo: Int
   @State private var posts: Posts = []
-  @State private var loading: Bool = false
+  @State private var loading: Bool = true
   
   @StateObject private var prefetcher = ThreadViewPrefetcher()
   
@@ -56,10 +56,6 @@ struct ThreadView: View {
   }
   
   func refresh() async {
-    if loading {
-      print("already loading")
-      return
-    }
     loading = true
     do {
       let thread: ChanThread? = try await client.get(endpoint: .thread(board:board, no:threadNo))

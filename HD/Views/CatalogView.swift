@@ -16,13 +16,14 @@ struct CatalogView: View {
   @EnvironmentObject private var client: Client
   let board: String
   @State private var threads: Posts = []
+  @State private var loading: Bool = true
   @SceneStorage("catalog_search") private var searchText = ""
 
   @StateObject private var prefetcher = CatalogViewPrefetcher()
 
   var body: some View {
     let filteredThreads = filteredThreads
-    if filteredThreads.isEmpty {
+    if !loading && filteredThreads.isEmpty {
       Text("No threads match search text.")
     }
     List(filteredThreads){ thread in
@@ -53,14 +54,17 @@ struct CatalogView: View {
   }
   
   func refresh() async {
+    loading = true
     var threads:[Post] = []
     do {
       let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
       threads = catalog.flatMap(\.threads)
     } catch {
+      print("Error loading \(board): \(error)")
     }
     self.prefetcher.posts = threads
     withAnimation {
+      loading = false
       self.threads = threads
     }
   }
