@@ -28,7 +28,9 @@ struct ContentView: View {
       case .active:
         // restore state if present
         if let routerPathData = routerPathData {
-          self.routerPath.restore(from: routerPathData)
+          if routerPathData != self.routerPath.encoded() {
+            self.routerPath.restore(from: routerPathData)
+          }
         }
       case .background,.inactive:
         if let updatedRouterPathData = routerPath.encoded() {
