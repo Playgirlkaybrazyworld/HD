@@ -17,11 +17,12 @@ struct ThreadView: View {
   let board: String
   let threadNo: Int
   @State private var posts: Posts = []
+  @State private var loading: Bool = true
   
   @StateObject private var prefetcher = ThreadViewPrefetcher()
   
   var body: some View {
-    if posts.isEmpty {
+    if !loading && posts.isEmpty {
       Text("No posts.")
     }
     List(posts){post in
@@ -51,6 +52,7 @@ struct ThreadView: View {
           let posts = thread?.posts ?? []
           self.prefetcher.posts = posts
           withAnimation {
+            loading = false
             self.posts = posts
           }
           try await Task.sleep(nanoseconds:30 * 1_000_000_000)
