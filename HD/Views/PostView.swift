@@ -17,11 +17,13 @@ struct PostView: View {
     ScrollView {
       VStack(alignment:.leading, spacing: 0) {
         if hasImage {
+          let (width, height, aspectRatio) = metrics
           image
-            // First frame ensures image doesn't grow larger than
-            // native resolution
-            .frame(maxWidth:w, maxHeight:h)
-            // Second frame centers image in list.
+            // preserve aspect ratio
+            .aspectRatio(aspectRatio, contentMode: .fill)
+            // No larger than original size
+            .frame(maxWidth:width, maxHeight:height)
+            // Center within allocated space.
             .frame(
               maxWidth: .infinity,
               maxHeight: .infinity,
@@ -60,26 +62,19 @@ struct PostView: View {
     post.tim != nil
   }
   
-  var w : CGFloat? {
-    if let w = post.w {
-      return CGFloat(w)
+  var metrics: (CGFloat, CGFloat, CGFloat) {
+    func convert(_ a:Int?, _ b:Int?, _ d:Int) -> CGFloat {
+      CGFloat(a ?? b ?? d)
     }
-    if let tn_w = post.tn_w {
-      return CGFloat(tn_w)
+    let width = convert(post.w, post.tn_w, 160)
+    let height = convert(post.h, post.tn_h, 160)
+    if post.h == 0 {
+      return (width, height, CGFloat(1.0))
     }
-    return nil
+    print(post.id, width, height, width / height)
+    return (width, height, width / height)
   }
-  
-  var h : CGFloat? {
-    if let h = post.h {
-      return CGFloat(h)
-    }
-    if let tn_h = post.tn_h {
-      return CGFloat(tn_h)
-    }
-    return nil
-  }
-  
+    
   var effectiveFilename: String {
     if let filename = post.filename {
       return filename
@@ -108,12 +103,8 @@ struct PostView: View {
             ImageView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
           } else if isGif(ext) {
             AnimatedGifView(board:board, tim: tim, ext: ext)
-              .aspectRatio(CGFloat(post.w!) / CGFloat(post.h!), contentMode: .fill)
-              .frame(maxWidth:CGFloat(post.w!), maxHeight:CGFloat(post.h!))
-          } else if isAnimatable(ext) {
-            VLCView(board:board, tim: tim, ext: ext, width: post.w, height: post.h)
-              .aspectRatio(CGFloat(post.w!) / CGFloat(post.h!), contentMode: .fill)
-              .frame(maxWidth:CGFloat(post.w!), maxHeight:CGFloat(post.h!))
+          } else if isVLCViewable(ext) {
+            VLCView(board:board, postNo: post.id, tim: tim, ext: ext, width: post.w, height: post.h)
           } else {
             ThumbnailView(board:board, tim: tim, width: post.tn_w, height: post.tn_h)
           }
@@ -138,7 +129,7 @@ struct PostView: View {
     ext == ".gif"
   }
   
-  func isAnimatable(_ ext: String) -> Bool {
+  func isVLCViewable(_ ext: String) -> Bool {
     ext == ".webm"
   }
 
