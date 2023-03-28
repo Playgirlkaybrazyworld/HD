@@ -3,6 +3,17 @@ import SwiftUI
 import SwiftyGif
 
 struct AnimatedGifView: UIViewRepresentable {
+  
+  class Delegate : ObservableObject, SwiftyGifDelegate {
+    @objc func gifURLDidFail(sender: UIImageView, url: URL, error: Error?) {
+      if let error {
+        print("Error reading gif \(url): \(error.localizedDescription)")
+      }
+    }
+  }
+  
+  @StateObject var delegate = Delegate()
+  
   let board: String
   let tim: Int
   let ext: String
@@ -16,6 +27,7 @@ struct AnimatedGifView: UIViewRepresentable {
   
   func makeUIView(context: Context) -> UIImageView {
     let imageView = UIImageView(gifURL: url)
+    imageView.delegate = delegate
     imageView.contentMode = .scaleAspectFit
     
     // As recommended by https://stackoverflow.com/questions/72732026/uiimageview-representable-not-resizing
@@ -39,6 +51,8 @@ struct AnimatedGifView: UIViewRepresentable {
       }
     }
   }
+  
+  // Private
   
   private var url:URL {
     FourChanAPIEndpoint.image(board:board, tim:tim, ext: ext).url()
