@@ -17,6 +17,14 @@ struct AnimatedGifView: UIViewRepresentable {
   func makeUIView(context: Context) -> UIImageView {
     let imageView = UIImageView(gifURL: url)
     imageView.contentMode = .scaleAspectFit
+    
+    // As recommended by https://stackoverflow.com/questions/72732026/uiimageview-representable-not-resizing
+    
+    imageView.setContentHuggingPriority(.defaultLow, for: .vertical)
+    imageView.setContentHuggingPriority(.defaultLow, for: .horizontal)
+    imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+    imageView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
     return imageView
   }
   
