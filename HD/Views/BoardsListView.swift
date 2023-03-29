@@ -20,7 +20,6 @@ struct BoardsListView: View {
           EmptyView()
         }.opacity(0)
       }
-      
     }
     .searchable(text: $searchText)
     .navigationTitle("Boards")
