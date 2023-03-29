@@ -8,15 +8,19 @@ struct BoardsListView: View {
   @EnvironmentObject private var client: Client
   @State private var boardIDs: [String] = []
   @State private var boardDict: [String: Board] = [:]
-  @State var selection: String?
   @SceneStorage("boards_search") private var searchText = ""
-
+  
   var body: some View {
-    List(filteredBoardIDs, id:\.self, selection: $selection) { boardID in
+    List(filteredBoardIDs, id:\.self) { boardID in
       let board = boardDict[boardID]!
-      NavigationLink(value: RouterDestination.catalog(board: boardID, title: board.title)) {
+      // ZStack hides the navigation link chevron.
+      ZStack {
         BoardsRowView(board:board)
+        NavigationLink(value: RouterDestination.catalog(board: boardID, title: board.title)) {
+          EmptyView()
+        }.opacity(0)
       }
+      
     }
     .searchable(text: $searchText)
     .navigationTitle("Boards")
@@ -33,13 +37,13 @@ struct BoardsListView: View {
   }
   
   var filteredBoardIDs: [String] {
-      if searchText.isEmpty {
-          return boardIDs
-      } else {
-        return boardIDs.filter { boardID in
-          boardID.localizedCaseInsensitiveContains(searchText) ||
-          boardDict[boardID]?.title.localizedCaseInsensitiveContains(searchText) ?? false
-        }
+    if searchText.isEmpty {
+      return boardIDs
+    } else {
+      return boardIDs.filter { boardID in
+        boardID.localizedCaseInsensitiveContains(searchText) ||
+        boardDict[boardID]?.title.localizedCaseInsensitiveContains(searchText) ?? false
       }
+    }
   }
 }
