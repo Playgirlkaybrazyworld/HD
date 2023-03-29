@@ -19,17 +19,19 @@ A High Definition 4Chan image board viewer.
 
 ## Features
 
-+ View full-screen posts, images, animations, and videos in high resolution and smooth scrolling.
-+ Each post has a Context menu that allows:
++ View full-screen posts, images, animations, and videos.
++ Context menu allows
   + sharing/copying the post
   + browsing the post in Safari
-+ Supports split view on iPads
++ iPad-optimized layout
++ Accessibility features like VoiceOver and Dynamic Type. 
 
 ## Known bugs / missing features
 
 - No sound for videos.
 - No transport controls for videos.
 - No posting.
+- Links to other posts in the same thread don't work.
 - No hiding of already seen threads.
 - 4chan data is not cached.
 
