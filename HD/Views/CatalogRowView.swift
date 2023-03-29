@@ -15,6 +15,8 @@ struct CatalogRowView: View {
   let thumbnailSizeBreakpoint: CGFloat = 128.0
   @ScaledMetric var height: CGFloat = 100.0
   @ScaledMetric var textSpacing: CGFloat = 2.0
+  @ScaledMetric var hSpacing: CGFloat = 2.0
+
   var body: some View {
     if height < thumbnailSizeBreakpoint {
       HStack(alignment:.top) {
@@ -43,6 +45,7 @@ struct CatalogRowView: View {
           x: 1.0,
           y: 1.0)
         .invisibleWhenNotActive()
+        .accessibilityHidden(true)
     }
   }
   
@@ -64,19 +67,28 @@ struct CatalogRowView: View {
         }
       }
       Spacer()
-      HStack(spacing:2){
+      HStack(spacing:hSpacing){
         let replies = thread.replies ?? 0
         let images = thread.images ?? 0
         if replies > 0 {
-          Image(systemName: "bubble.left")
-          Text("\(replies)")
+          HStack(spacing: hSpacing) {
+            Image(systemName: "bubble.left")
+            Text("\(replies)")
+          }
+          .accessibilityElement(children: .ignore)
+          .accessibilityLabel("\(replies) replies")
         }
         if replies > 0 && images > 0 {
           Text("•")
+          .accessibilityHidden(true)
         }
         if images > 0 {
-          Image(systemName: "photo")
-          Text("\(images)")
+          HStack(spacing: hSpacing) {
+            Image(systemName: "photo")
+            Text("\(images)")
+          }
+          .accessibilityElement(children: .ignore)
+          .accessibilityLabel("\(images) images")
         }
       }
       .font(.caption)
