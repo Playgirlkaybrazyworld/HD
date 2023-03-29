@@ -32,21 +32,18 @@ struct ThumbnailView: View {
     LazyImage(url:client.makeURL(endpoint:FourChanAPIEndpoint.thumbnail(board: board, tim: tim))){ state in
       if let image = state.image {
         image.resizable()
-          .aspectRatio(aspectRatio, contentMode: .fill)
-          .frame(maxWidth:maxSize, maxHeight:maxSize)
-          .clipped()
+          .scaledToFill()
+          .frame(width:maxSize, height:maxSize)
           .cornerRadius(4)
       } else if state.error != nil {
-        Color.red // Indicates an error
-          .aspectRatio(aspectRatio, contentMode: .fill)
-          .frame(maxWidth:maxSize, maxHeight:maxSize)
-          .clipped()
+        Color.secondary // Indicates an error
+          .scaledToFill()
+          .frame(width:maxSize, height:maxSize)
           .cornerRadius(4)
       } else {
         Color(red:0.0, green: 0.0, blue: 0.0, opacity: 0.0) // Acts as a placeholder
-          .aspectRatio(aspectRatio, contentMode: .fill)
-          .frame(maxWidth:maxSize, maxHeight:maxSize)
-          .clipped()
+          .scaledToFill()
+          .frame(width:maxSize, height:maxSize)
           .cornerRadius(4)
       }
     }
