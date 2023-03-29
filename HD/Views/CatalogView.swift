@@ -12,9 +12,14 @@ import Network
 import SwiftUI
 import UIKit
 
+struct ThreadSelection: Codable, Hashable {
+  let board : String
+  let title: String
+  let no: Int
+}
+
 struct CatalogView: View {
   @EnvironmentObject private var client: Client
-  @EnvironmentObject private var routerPath: RouterPath
 
   let board: String
   let title: String
@@ -24,19 +29,20 @@ struct CatalogView: View {
 
   @StateObject private var prefetcher = CatalogViewPrefetcher()
 
+  @Binding var selection: ThreadSelection?
+
   var body: some View {
     let filteredThreads = filteredThreads
     if !loading && filteredThreads.isEmpty {
       Text("No threads match search text.")
     }
-    List(filteredThreads){ thread in
-      Button(action: {
-        routerPath.navigate(to: .thread(
-          title:thread.title,
-          board:board, threadNo:thread.no))
-      }) {
-        CatalogRowView(board:board, thread: thread)
-      }
+    List(filteredThreads, id:\.id, selection: $selection){ thread in
+      CatalogRowView(board:board, thread: thread)
+        .tag(ThreadSelection(
+          board: board,
+          title: thread.title,
+          no: thread.no
+        ))
     }
     .refreshable {
       await refresh()

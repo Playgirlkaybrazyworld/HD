@@ -4,22 +4,25 @@ import FourChan
 import Network
 import SwiftUI
 
+struct BoardSelection: Codable, Hashable {
+  let board : String
+  let title: String
+}
+
 struct BoardsListView: View {
   @EnvironmentObject private var client: Client
-  @EnvironmentObject private var routerPath: RouterPath
   @State private var boardIDs: [String] = []
   @State private var boardDict: [String: Board] = [:]
   @SceneStorage("boards_search") private var searchText = ""
+  @Binding var selection: BoardSelection?
   
   var body: some View {
-    List(filteredBoardIDs, id:\.self) { boardID in
+    List(filteredBoardIDs, id:\.self, selection: $selection) { boardID in
       let board = boardDict[boardID]!
-      Button(action: {
-        routerPath.navigate(to:.catalog(board: boardID, title: board.title))
-      }){
-        BoardsRowView(board:board)
-      }
+      BoardsRowView(board:board)
+      .tag(BoardSelection(board:boardID, title:board.title))
     }
+    .listStyle(.sidebar)
     .searchable(text: $searchText)
     .navigationTitle("Boards")
     .navigationBarTitleDisplayMode(.inline)

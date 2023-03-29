@@ -9,32 +9,70 @@ import Env
 import Network
 import SwiftUI
 
+struct SelectionState: Codable {
+  var boardSelection: BoardSelection?
+  var threadSelection: ThreadSelection?
+}
+
 struct ContentView: View {
   @Environment(\.scenePhase) private var scenePhase
-  @StateObject var routerPath = RouterPath()
   @StateObject var client = Client()
-  @SceneStorage("routerPath") private var routerPathData: Data?
+  @SceneStorage("selection") private var selectionData: Data?
+  @State private var boardSelection: BoardSelection?
+  @State private var threadSelection: ThreadSelection?
 
   var body: some View {
-    NavigationStack(path: $routerPath.path) {
-      BoardsListView()
-        .withAppRouter()
-    }
+    NavigationSplitView(
+      sidebar: {
+        BoardsListView(selection:$boardSelection)
+      },
+      content: {
+        if let boardSelection {
+          CatalogView(
+            board: boardSelection.board,
+            title: boardSelection.title,
+            selection:$threadSelection)
+          .id(boardSelection)
+        } else {
+          Text("Please choose a board.")
+        }
+      },
+      detail: {
+        if let boardSelection,
+           let threadSelection,
+           boardSelection.board == threadSelection.board {
+          ThreadView(title:threadSelection.title,
+                     board:threadSelection.board,
+                     threadNo:threadSelection.no)
+          .id(threadSelection)
+        } else {
+          Text("Please choose a thread.")
+        }
+      }
+    )
     .environmentObject(client)
-    .environmentObject(routerPath)
+    .onChange(of: boardSelection) { _ in
+      if threadSelection?.board != boardSelection?.board {
+        threadSelection = nil
+      }
+    }
     .onChange(of: scenePhase) { phase in
       switch phase {
       case .active:
         // restore state if present
-        if let routerPathData = routerPathData {
-          if routerPathData != self.routerPath.encoded() {
-            self.routerPath.restore(from: routerPathData)
-          }
+        if let selectionData {
+          let decoder = JSONDecoder()
+          let selection = try? decoder.decode(SelectionState.self, from: selectionData)
+          boardSelection = selection?.boardSelection
+          threadSelection = selection?.threadSelection
         }
       case .background,.inactive:
-        if let updatedRouterPathData = routerPath.encoded() {
-          routerPathData = updatedRouterPathData
-        }
+        let encoder = JSONEncoder()
+        let selectionState =
+          SelectionState(
+            boardSelection:boardSelection,
+            threadSelection:threadSelection)
+        selectionData = try? encoder.encode(selectionState)
       default:
         break
       }
