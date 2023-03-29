@@ -24,6 +24,7 @@ struct BoardsListView: View {
     }
     .searchable(text: $searchText)
     .navigationTitle("Boards")
+    .navigationBarTitleDisplayMode(.inline)
     .onAppear {
       Task {
         let boards: Boards = try await client.get(endpoint: .boards)
