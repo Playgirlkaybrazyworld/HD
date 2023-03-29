@@ -19,12 +19,14 @@ struct CatalogRowView: View {
 
   var body: some View {
     if height < thumbnailSizeBreakpoint {
+      // Normal size layout
       HStack(alignment:.top) {
         textSummary
         Spacer()
         thumbnail
       }
     } else {
+      // large size alignment
       VStack (alignment:.leading) {
         textSummary
         HStack {
@@ -63,7 +65,6 @@ struct CatalogRowView: View {
         if let com = thread.com {
           Text(HTMLString(html:com).asSafeMarkdownAttributedString)
             .font(.subheadline)
-            .foregroundColor(.secondary)
         }
       }
       Spacer()

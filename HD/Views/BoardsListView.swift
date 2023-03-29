@@ -6,6 +6,7 @@ import SwiftUI
 
 struct BoardsListView: View {
   @EnvironmentObject private var client: Client
+  @EnvironmentObject private var routerPath: RouterPath
   @State private var boardIDs: [String] = []
   @State private var boardDict: [String: Board] = [:]
   @SceneStorage("boards_search") private var searchText = ""
@@ -13,13 +14,10 @@ struct BoardsListView: View {
   var body: some View {
     List(filteredBoardIDs, id:\.self) { boardID in
       let board = boardDict[boardID]!
-      // ZStack hides the navigation link chevron.
-      ZStack {
+      Button(action: {
+        routerPath.navigate(to:.catalog(board: boardID, title: board.title))
+      }){
         BoardsRowView(board:board)
-        NavigationLink(value: RouterDestination.catalog(board: boardID, title: board.title)) {
-          EmptyView()
-        }
-        .opacity(0)
       }
     }
     .searchable(text: $searchText)

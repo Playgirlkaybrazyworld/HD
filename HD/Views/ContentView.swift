@@ -14,7 +14,7 @@ struct ContentView: View {
   @StateObject var routerPath = RouterPath()
   @StateObject var client = Client()
   @SceneStorage("routerPath") private var routerPathData: Data?
-  
+
   var body: some View {
     NavigationStack(path: $routerPath.path) {
       BoardsListView()
@@ -40,5 +40,4 @@ struct ContentView: View {
       }
     }
   }
-  
 }

@@ -14,6 +14,8 @@ import UIKit
 
 struct CatalogView: View {
   @EnvironmentObject private var client: Client
+  @EnvironmentObject private var routerPath: RouterPath
+
   let board: String
   let title: String
   @State private var threads: Posts = []
@@ -28,14 +30,12 @@ struct CatalogView: View {
       Text("No threads match search text.")
     }
     List(filteredThreads){ thread in
-      // ZStack hides the navigation link chevron.
-      ZStack(alignment:.topLeading) {
-        CatalogRowView(board:board, thread: thread)
-        NavigationLink(value: RouterDestination.thread(
+      Button(action: {
+        routerPath.navigate(to: .thread(
           title:thread.title,
-          board:board, threadNo:thread.no)) {
-            EmptyView()
-          }.opacity(0)
+          board:board, threadNo:thread.no))
+      }) {
+        CatalogRowView(board:board, thread: thread)
       }
     }
     .refreshable {
