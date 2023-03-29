@@ -28,10 +28,14 @@ struct CatalogView: View {
       Text("No threads match search text.")
     }
     List(filteredThreads){ thread in
-      NavigationLink(value: RouterDestination.thread(
-        title:thread.title,
-        board:board, threadNo:thread.no)) {
+      // ZStack hides the navigation link chevron.
+      ZStack(alignment:.topLeading) {
         CatalogRowView(board:board, thread: thread)
+        NavigationLink(value: RouterDestination.thread(
+          title:thread.title,
+          board:board, threadNo:thread.no)) {
+            EmptyView()
+          }.opacity(0)
       }
     }
     .refreshable {
