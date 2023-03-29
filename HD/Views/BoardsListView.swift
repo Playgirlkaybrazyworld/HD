@@ -13,8 +13,9 @@ struct BoardsListView: View {
 
   var body: some View {
     List(filteredBoardIDs, id:\.self, selection: $selection) { boardID in
-      NavigationLink(value: RouterDestination.catalog(board: boardID)) {
-        BoardsRowView(board:boardDict[boardID]!)
+      let board = boardDict[boardID]!
+      NavigationLink(value: RouterDestination.catalog(board: boardID, title: board.title)) {
+        BoardsRowView(board:board)
       }
     }
     .searchable(text: $searchText)

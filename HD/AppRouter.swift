@@ -9,8 +9,8 @@ extension View {
       switch destination {
       case .boards:
         Text("boards")
-      case let .catalog(board):
-        CatalogView(board: board)
+      case let .catalog(board, title):
+        CatalogView(board: board, title:title)
       case let .thread(title, board, threadNo):
         ThreadView(title:title, board:board, threadNo: threadNo)
       }

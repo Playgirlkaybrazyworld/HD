@@ -15,6 +15,7 @@ import UIKit
 struct CatalogView: View {
   @EnvironmentObject private var client: Client
   let board: String
+  let title: String
   @State private var threads: Posts = []
   @State private var loading: Bool = true
   @SceneStorage("catalog_search") private var searchText = ""
@@ -37,7 +38,7 @@ struct CatalogView: View {
       await refresh()
     }
     .searchable(text: $searchText)
-    .navigationTitle(board)
+    .navigationTitle(title)
     .navigationBarTitleDisplayMode(.inline)
     .listStyle(.plain)
     .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
