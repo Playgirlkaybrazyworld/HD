@@ -12,55 +12,77 @@ import SwiftUI
 struct CatalogRowView: View {
   let board: String
   let thread: Post
-  let height: CGFloat = 100
+  let thumbnailSizeBreakpoint: CGFloat = 128.0
+  @ScaledMetric var height: CGFloat = 100.0
+  @ScaledMetric var textSpacing: CGFloat = 2.0
   var body: some View {
-    HStack(alignment:.top) {
-      VStack(alignment:.leading){
-        VStack(alignment:.leading, spacing:2) {
-          if let sub = thread.sub {
-            Text(HTMLString(html: sub)
-              .asSafeMarkdownAttributedString)
-            .lineLimit(2)
-            .font(.headline)
-            .fixedSize(horizontal: false, vertical:true)
-          }
-          if let com = thread.com {
-            Text(HTMLString(html:com).asSafeMarkdownAttributedString)
-              .font(.subheadline)
-              .foregroundColor(.secondary)
-          }
-        }
+    if height < thumbnailSizeBreakpoint {
+      HStack(alignment:.top) {
+        textSummary
         Spacer()
-        HStack(spacing:2){
-          let replies = thread.replies ?? 0
-          let images = thread.images ?? 0
-          if replies > 0 {
-            Image(systemName: "bubble.left")
-            Text("\(replies)")
-          }
-          if replies > 0 && images > 0 {
-            Text("•")
-          }
-          if images > 0 {
-            Image(systemName: "photo")
-            Text("\(images)")
-          }
-        }
-        .font(.caption)
-        .foregroundColor(.secondary)
+        thumbnail
       }
-      .frame(height:height)
-      Spacer()
-      if let tim = thread.tim {
-        ThumbnailView(board: board, tim: tim, width: thread.tn_w, height: thread.tn_h, maxSize: height)
-          .shadow(
-            color: .primary,
-            radius: 1.0,
-            x: 1.0,
-            y: 1.0)
-          .invisibleWhenNotActive()
+    } else {
+      VStack (alignment:.leading) {
+        textSummary
+        HStack {
+          Spacer()
+          thumbnail
+        }
       }
     }
+  }
+  
+  @ViewBuilder
+  var thumbnail: some View {
+    if let tim = thread.tim {
+      ThumbnailView(board: board, tim: tim, width: thread.tn_w, height: thread.tn_h, maxSize: height)
+        .shadow(
+          color: .primary,
+          radius: 1.0,
+          x: 1.0,
+          y: 1.0)
+        .invisibleWhenNotActive()
+    }
+  }
+  
+  @ViewBuilder
+  var textSummary: some View {
+    VStack(alignment:.leading){
+      VStack(alignment:.leading, spacing:textSpacing) {
+        if let sub = thread.sub {
+          Text(HTMLString(html: sub)
+            .asSafeMarkdownAttributedString)
+          .lineLimit(2)
+          .font(.headline)
+          .fixedSize(horizontal: false, vertical:true)
+        }
+        if let com = thread.com {
+          Text(HTMLString(html:com).asSafeMarkdownAttributedString)
+            .font(.subheadline)
+            .foregroundColor(.secondary)
+        }
+      }
+      Spacer()
+      HStack(spacing:2){
+        let replies = thread.replies ?? 0
+        let images = thread.images ?? 0
+        if replies > 0 {
+          Image(systemName: "bubble.left")
+          Text("\(replies)")
+        }
+        if replies > 0 && images > 0 {
+          Text("•")
+        }
+        if images > 0 {
+          Image(systemName: "photo")
+          Text("\(images)")
+        }
+      }
+      .font(.caption)
+      .foregroundColor(.secondary)
+    }
+    .frame(height:height)
   }
 }
 
