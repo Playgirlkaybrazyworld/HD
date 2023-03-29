@@ -58,6 +58,8 @@
 		3656CEF029B9730500C64299 /* ThreadViewPrefetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewPrefetcher.swift; sourceTree = "<group>"; };
 		366B688E29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewPrefetcher.swift; sourceTree = "<group>"; };
 		366B689529BD30B300B5BC0E /* BoardsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListView.swift; sourceTree = "<group>"; };
+		3691E80629D4895A00BFE78F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		3691E80729D496F300BFE78F /* README_images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = README_images; sourceTree = "<group>"; };
 		36EC2EFA29C816720012F438 /* AnimatedGIFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedGIFView.swift; sourceTree = "<group>"; };
 		36EC2EFD29C8295C0012F438 /* VLCView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLCView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -87,11 +89,13 @@
 		3656CEB029B6FCF000C64299 = {
 			isa = PBXGroup;
 			children = (
-				3656CEE629B8574D00C64299 /* README.md */,
-				36C1AA4B29B9A8F100EE817A /* Packages */,
-				3656CEBB29B6FCF000C64299 /* HD */,
-				3656CEBA29B6FCF000C64299 /* Products */,
 				3656CECE29B83F7F00C64299 /* Frameworks */,
+				3656CEBB29B6FCF000C64299 /* HD */,
+				3691E80629D4895A00BFE78F /* LICENSE */,
+				36C1AA4B29B9A8F100EE817A /* Packages */,
+				3656CEBA29B6FCF000C64299 /* Products */,
+				3691E80729D496F300BFE78F /* README_images */,
+				3656CEE629B8574D00C64299 /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
