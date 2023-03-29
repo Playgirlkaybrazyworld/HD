@@ -15,8 +15,10 @@ struct BoardsRowView: View {
       Text(board.title)
       Spacer()
       Text(board.id)
+        .speechSpellsOutCharacters(true)
         .foregroundColor(.secondary)
     }
+    .accessibilityElement(children: .combine)
   }
 }
 
