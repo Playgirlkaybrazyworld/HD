@@ -12,19 +12,23 @@ import SwiftUI
 struct CatalogRowView: View {
   let board: String
   let thread: Post
+  let height: CGFloat = 100
   var body: some View {
     HStack(alignment:.top) {
       VStack(alignment:.leading){
-        if let sub = thread.sub {
-          Text(HTMLString(html: sub)
-            .asSafeMarkdownAttributedString)
-          .lineLimit(1)
-          .font(.headline)
-        }
-        if let com = thread.com {
-          Text(HTMLString(html:com).asSafeMarkdownAttributedString)
-            .font(.subheadline)
-            .foregroundColor(.secondary)
+        VStack(alignment:.leading, spacing:2) {
+          if let sub = thread.sub {
+            Text(HTMLString(html: sub)
+              .asSafeMarkdownAttributedString)
+            .lineLimit(2)
+            .font(.headline)
+            .fixedSize(horizontal: false, vertical:true)
+          }
+          if let com = thread.com {
+            Text(HTMLString(html:com).asSafeMarkdownAttributedString)
+              .font(.subheadline)
+              .foregroundColor(.secondary)
+          }
         }
         Spacer()
         HStack(spacing:2){
@@ -45,14 +49,15 @@ struct CatalogRowView: View {
         .font(.caption)
         .foregroundColor(.secondary)
       }
-      .frame(height:100)
+      .frame(height:height)
       Spacer()
       if let tim = thread.tim {
-        ThumbnailView(board: board, tim: tim, width: thread.tn_w, height: thread.tn_h, maxSize: 100.0)
+        ThumbnailView(board: board, tim: tim, width: thread.tn_w, height: thread.tn_h, maxSize: height)
           .shadow(
-                                          color: .secondary,
-                                          radius: 1.0,
-                                          x: 2.0, y: 2.0)
+            color: .primary,
+            radius: 1.0,
+            x: 1.0,
+            y: 1.0)
           .invisibleWhenNotActive()
       }
     }

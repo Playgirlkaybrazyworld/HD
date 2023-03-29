@@ -18,7 +18,8 @@ struct BoardsListView: View {
         BoardsRowView(board:board)
         NavigationLink(value: RouterDestination.catalog(board: boardID, title: board.title)) {
           EmptyView()
-        }.opacity(0)
+        }
+        .opacity(0)
       }
     }
     .searchable(text: $searchText)
