@@ -15,6 +15,7 @@ struct BoardsRowView: View {
       Text(board.title)
       Spacer()
       Text(board.id)
+        .foregroundColor(.secondary)
     }
   }
 }
