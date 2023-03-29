@@ -64,6 +64,12 @@ Name | Description
 [SwiftyGIF](https://github.com/kirualex/SwiftyGif) | GIF image loader.
 [vlckit-spm](https://github.com/tylerjonesio/vlckit-spm) | VLC webm player.
 
+## Image credit
+
+The app icon was created using [Draw Things](https://apps.apple.com/us/app/draw-things-ai-generation/id6444050820),
+with the [ChilloutMix](https://civitai.com/models/6424/chilloutmix) model and
+the [墨心 MoXin](https://civitai.com/models/12597/moxin) LORAs.
+
 ## License
 
 This project is licensed under the terms of the MIT license.
