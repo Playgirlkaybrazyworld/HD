@@ -23,7 +23,7 @@ struct ContentView: View {
           CatalogView(
             board: boardSelection.board,
             title: boardSelection.title,
-            selection:$threadSelection)
+            selection: $threadSelection)
           .id(boardSelection)
         } else {
           Text("Please choose a board.")
@@ -33,9 +33,10 @@ struct ContentView: View {
         if let boardSelection,
            let threadSelection,
            boardSelection.board == threadSelection.board {
-          ThreadView(title:threadSelection.title,
-                     board:threadSelection.board,
-                     threadNo:threadSelection.no)
+          ThreadView(title: threadSelection.title,
+                     board: threadSelection.board,
+                     threadNo: threadSelection.no,
+                     topPost: nil)
           .id(threadSelection)
         } else {
           Text("Please choose a thread.")

@@ -9,31 +9,31 @@ struct ThreadView: View {
   let title: String
   let board: String
   let threadNo: Int
-  @StateObject private var viewModel = ThreadViewModel()
+  @StateObject private var viewModel : ThreadViewModel
   @StateObject private var prefetcher = ThreadViewPrefetcher()
-  @State private var collectionView: UICollectionView?
+  
+  init(title: String, board: String, threadNo: Int, topPost: Int?) {
+    self.title = title
+    self.board = board
+    self.threadNo = threadNo
+    self._viewModel = StateObject(wrappedValue: ThreadViewModel(topPost:topPost))
+  }
 
   var body: some View {
-    posts
-    .navigationTitle(title)
-    .navigationBarTitleDisplayMode(.inline)
-    .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
-      self.collectionView = collectionView
-      collectionView.isPrefetchingEnabled = true
-      collectionView.prefetchDataSource = self.prefetcher
-    }
-    .onChange(of: viewModel.scrollToPostNo) { postNo in
-      if let collectionView,
-         let postNo,
-         let index = viewModel.index(postNo:postNo),
-         let rows = collectionView.dataSource?.collectionView(collectionView, numberOfItemsInSection: 0),
-         rows > index
-      {
-        collectionView.scrollToItem(at: .init(row: index, section: 0),
-                                    at: .top,
-                                    animated: viewModel.scrollToPostNoAnimated)
-        viewModel.scrollToPostNoAnimated = false
-        viewModel.scrollToPostNo = nil
+    ScrollViewReader{ scrollViewProxy in
+      posts
+      .navigationTitle(title)
+      .navigationBarTitleDisplayMode(.inline)
+      .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
+        collectionView.isPrefetchingEnabled = true
+        collectionView.prefetchDataSource = self.prefetcher
+      }
+      .onChange(of: viewModel.scrollToPostNo) { postNo in
+        if let postNo {
+          scrollViewProxy.scrollTo(postNo)
+          viewModel.scrollToPostNoAnimated = false
+          viewModel.scrollToPostNo = nil
+        }
       }
     }
     .environment(\.openURL, OpenURLAction { url in
@@ -73,6 +73,7 @@ struct ThreadView: View {
         PostView(board:board,
                  threadNo:threadNo,
                  post:post)
+        .tag(post.id)
         .onAppear() {
           viewModel.appeared(post:post.id)
         }
@@ -93,6 +94,13 @@ struct ThreadView: View {
       let posts = thread?.posts ?? []
       self.prefetcher.posts = posts
       withAnimation {
+        if case let .loading(topPost) = viewModel.threadState {
+          if let topPost {
+            viewModel.scrollToPostNo = topPost
+            viewModel.scrollToPostNoAnimated = true
+          }
+        }
+        viewModel.threadState = .display(posts:posts)
         viewModel.threadState = .display(posts:posts)
       }
     } catch {

@@ -3,7 +3,11 @@ import FourChan
 
 class ThreadViewModel : ObservableObject {
   @Published var scrollToPostNo: PostNumber?
-  @Published var threadState: ThreadState = .loading
+  @Published var threadState: ThreadState
+  
+  init(topPost: PostNumber?) {
+    threadState = .loading(topPost:topPost)
+  }
   
   var visiblePosts = Set<PostNumber>()
   var scrollToPostNoAnimated: Bool = false
@@ -29,7 +33,7 @@ class ThreadViewModel : ObservableObject {
 }
 
 public enum ThreadState {
-  case loading
+  case loading(topPost: PostNumber?)
   case display(posts: [Post])
   case error(error: Error)
 }
