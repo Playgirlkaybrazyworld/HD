@@ -1,10 +1,3 @@
-//
-//  ThreadView.swift
-//  HD
-//
-//  Created by Jack Palevich on 3/7/23.
-//
-
 import Introspect
 import FourChan
 import Network

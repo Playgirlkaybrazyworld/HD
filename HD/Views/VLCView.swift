@@ -1,10 +1,3 @@
-//
-//  VLCView.swift
-//  HD
-//
-//  Created by Jack Palevich on 3/27/23.
-//
-
 import SwiftUI
 import VLCKitSPM
 import UIKit

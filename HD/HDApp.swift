@@ -1,10 +1,3 @@
-//
-//  HDApp.swift
-//  HD
-//
-//  Created by Jack Palevich on 3/6/23.
-//
-
 import Network
 import SwiftUI
 

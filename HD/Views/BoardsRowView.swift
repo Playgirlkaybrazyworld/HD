@@ -1,10 +1,6 @@
 //
 //  BoardsRowView.swift
 //  HD
-//
-//  Created by Jack Palevich on 3/7/23.
-//
-
 import FourChan
 import SwiftUI
 
