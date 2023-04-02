@@ -31,6 +31,7 @@
 		366B688F29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366B688E29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift */; };
 		366B689629BD30B300B5BC0E /* BoardsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366B689529BD30B300B5BC0E /* BoardsListView.swift */; };
 		3691E80A29D92B6900BFE78F /* ThreadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691E80929D92B6900BFE78F /* ThreadViewModel.swift */; };
+		3691E80D29D9458500BFE78F /* PostURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691E80C29D9458500BFE78F /* PostURL.swift */; };
 		36EC2EF129C7EF990012F438 /* FourChan in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF029C7EF990012F438 /* FourChan */; };
 		36EC2EF429C7F12A0012F438 /* HTMLString in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF329C7F12A0012F438 /* HTMLString */; };
 		36EC2EF929C815FC0012F438 /* SwiftyGif in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF829C815FC0012F438 /* SwiftyGif */; };
@@ -62,6 +63,7 @@
 		3691E80629D4895A00BFE78F /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		3691E80729D496F300BFE78F /* README_images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = README_images; sourceTree = "<group>"; };
 		3691E80929D92B6900BFE78F /* ThreadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewModel.swift; sourceTree = "<group>"; };
+		3691E80C29D9458500BFE78F /* PostURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostURL.swift; sourceTree = "<group>"; };
 		36EC2EFA29C816720012F438 /* AnimatedGIFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedGIFView.swift; sourceTree = "<group>"; };
 		36EC2EFD29C8295C0012F438 /* VLCView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLCView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -113,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				3656CEBC29B6FCF000C64299 /* HDApp.swift */,
+				3691E80B29D9456300BFE78F /* Misc */,
 				3691E80829D92B4500BFE78F /* ViewModels */,
 				3656CED329B8427700C64299 /* Views */,
 				3656CEC029B6FCF100C64299 /* Assets.xcassets */,
@@ -164,6 +167,14 @@
 				3691E80929D92B6900BFE78F /* ThreadViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		3691E80B29D9456300BFE78F /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				3691E80C29D9458500BFE78F /* PostURL.swift */,
+			);
+			path = Misc;
 			sourceTree = "<group>";
 		};
 		36C1AA4B29B9A8F100EE817A /* Packages */ = {
@@ -273,6 +284,7 @@
 				3691E80A29D92B6900BFE78F /* ThreadViewModel.swift in Sources */,
 				3656CED929B8448D00C64299 /* CatalogView.swift in Sources */,
 				3656CEF129B9730500C64299 /* ThreadViewPrefetcher.swift in Sources */,
+				3691E80D29D9458500BFE78F /* PostURL.swift in Sources */,
 				363AF29129D1EEDB0030B746 /* HideWhenNotActiveModifier.swift in Sources */,
 				366B688F29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift in Sources */,
 				3656CEE529B853EF00C64299 /* ImageView.swift in Sources */,
