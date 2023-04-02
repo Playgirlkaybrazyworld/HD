@@ -10,17 +10,12 @@ struct BoardSelection: Codable, Hashable {
 
 struct BoardsListView: View {
   @EnvironmentObject private var client: Client
-  @State private var boardIDs: [String] = []
-  @State private var boardDict: [String: Board] = [:]
+  @StateObject private var viewModel = BoardsViewModel()
   @SceneStorage("boards_search") private var searchText = ""
   @Binding var selection: BoardSelection?
   
   var body: some View {
-    List(filteredBoardIDs, id:\.self, selection: $selection) { boardID in
-      let board = boardDict[boardID]!
-      BoardsRowView(board:board)
-        .tag(BoardSelection(board:boardID, title:board.title))
-    }
+    boards
     .listStyle(.sidebar)
     .searchable(text: $searchText)
     .navigationTitle("Boards")
@@ -29,21 +24,36 @@ struct BoardsListView: View {
       do {
         let boards: Boards = try await client.get(endpoint: .boards)
         withAnimation {
-          boardDict = [String:Board](uniqueKeysWithValues:
-                                      boards.boards.map{($0.id, $0)})
-          boardIDs = boardDict.keys.sorted()
+          viewModel.boardsState = .display(boards:boards.boards)
         }
-      } catch {}
+      } catch {
+        viewModel.boardsState = .error(error: error)
+      }
     }
   }
   
-  var filteredBoardIDs: [String] {
+  @ViewBuilder
+  var boards: some View {
+    switch viewModel.boardsState {
+    case .loading:
+      EmptyView()
+    case let .display(boards):
+      List(filter(boards:boards), selection: $selection) { board in
+        BoardsRowView(board:board)
+          .tag(BoardSelection(board:board.id, title:board.title))
+      }
+    case let .error(error):
+      Text("Error: \(error.localizedDescription)")
+    }
+  }
+  
+  func filter(boards: [Board]) -> [Board] {
     if searchText.isEmpty {
-      return boardIDs
+      return boards
     } else {
-      return boardIDs.filter { boardID in
-        boardID.localizedCaseInsensitiveContains(searchText) ||
-        boardDict[boardID]?.title.localizedCaseInsensitiveContains(searchText) ?? false
+      return boards.filter { board in
+        board.id.localizedCaseInsensitiveContains(searchText) ||
+        board.title.localizedCaseInsensitiveContains(searchText)
       }
     }
   }
