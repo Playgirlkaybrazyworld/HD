@@ -14,7 +14,7 @@ struct ThreadView: View {
   @State private var collectionView: UICollectionView?
 
   var body: some View {
-    threads
+    posts
     .navigationTitle(title)
     .navigationBarTitleDisplayMode(.inline)
     .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
@@ -64,7 +64,7 @@ struct ThreadView: View {
   }
   
   @ViewBuilder
-  var threads: some View {
+  var posts: some View {
     switch viewModel.threadState {
     case .loading:
       Text("Loading...")

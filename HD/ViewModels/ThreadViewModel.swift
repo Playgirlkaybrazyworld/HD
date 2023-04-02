@@ -26,7 +26,6 @@ class ThreadViewModel : ObservableObject {
     }
     return nil
   }
-
 }
 
 public enum ThreadState {

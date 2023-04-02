@@ -15,8 +15,7 @@ struct CatalogView: View {
   
   let board: String
   let title: String
-  @State private var threads: Posts = []
-  @State private var loading: Bool = true
+  @StateObject private var viewModel = CatalogViewModel()
   @SceneStorage("catalog_search") private var searchText = ""
   
   @StateObject private var prefetcher = CatalogViewPrefetcher()
@@ -24,18 +23,7 @@ struct CatalogView: View {
   @Binding var selection: ThreadSelection?
   
   var body: some View {
-    let filteredThreads = filteredThreads
-    if !loading && filteredThreads.isEmpty {
-      Text("No threads match search text.")
-    }
-    List(filteredThreads, id:\.id, selection: $selection){ thread in
-      CatalogRowView(board:board, thread: thread)
-        .tag(ThreadSelection(
-          board: board,
-          title: thread.title,
-          no: thread.no
-        ))
-    }
+    threads
     .refreshable {
       await refresh()
     }
@@ -59,23 +47,44 @@ struct CatalogView: View {
     }
   }
   
+  @ViewBuilder
+  var threads : some View {
+    switch viewModel.catalogState {
+    case .loading:
+      EmptyView()
+    case let .display(threads):
+      let filteredThreads = filter(threads:threads)
+      if filteredThreads.isEmpty {
+        Text("No threads match search text.")
+      }
+      List(filteredThreads, id:\.id, selection: $selection){ thread in
+        CatalogRowView(board:board, thread: thread)
+          .tag(ThreadSelection(
+            board: board,
+            title: thread.title,
+            no: thread.no
+          ))
+      }
+    case let .error(error):
+      Text("Error: \(error.localizedDescription)")
+    }
+  }
+  
   func refresh() async {
-    loading = true
     var threads:[Post] = []
     do {
       let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
       threads = catalog.flatMap(\.threads)
     } catch {
-      print("Error loading \(board): \(error)")
+      viewModel.catalogState = .error(error: error)
     }
     self.prefetcher.posts = threads
     withAnimation {
-      loading = false
-      self.threads = threads
+      viewModel.catalogState = .display(threads: threads)
     }
   }
   
-  var filteredThreads: [Post] {
+  func filter(threads: [Post]) -> [Post] {
     if searchText.isEmpty {
       return threads
     } else {
