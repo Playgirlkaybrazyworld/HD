@@ -31,7 +31,6 @@ A High Definition 4Chan image board viewer.
 - No sound for videos.
 - No transport controls for videos.
 - No posting.
-- Links to other posts in the same thread don't work.
 - No hiding of already seen threads.
 - 4chan data is not cached.
 
