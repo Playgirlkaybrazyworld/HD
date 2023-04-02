@@ -1,4 +1,3 @@
-import Env
 import Foundation
 import FourChan
 import Network
@@ -20,21 +19,21 @@ struct BoardsListView: View {
     List(filteredBoardIDs, id:\.self, selection: $selection) { boardID in
       let board = boardDict[boardID]!
       BoardsRowView(board:board)
-      .tag(BoardSelection(board:boardID, title:board.title))
+        .tag(BoardSelection(board:boardID, title:board.title))
     }
     .listStyle(.sidebar)
     .searchable(text: $searchText)
     .navigationTitle("Boards")
     .navigationBarTitleDisplayMode(.inline)
-    .onAppear {
-      Task {
+    .task {
+      do {
         let boards: Boards = try await client.get(endpoint: .boards)
         withAnimation {
           boardDict = [String:Board](uniqueKeysWithValues:
                                       boards.boards.map{($0.id, $0)})
           boardIDs = boardDict.keys.sorted()
         }
-      }
+      } catch {}
     }
   }
   

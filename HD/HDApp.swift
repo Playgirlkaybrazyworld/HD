@@ -5,7 +5,6 @@
 //  Created by Jack Palevich on 3/6/23.
 //
 
-import Env
 import Network
 import SwiftUI
 

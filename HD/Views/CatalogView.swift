@@ -5,7 +5,6 @@
 //  Created by Jack Palevich on 3/7/23.
 //
 
-import Env
 import FourChan
 import Introspect
 import Network
@@ -20,17 +19,17 @@ struct ThreadSelection: Codable, Hashable {
 
 struct CatalogView: View {
   @EnvironmentObject private var client: Client
-
+  
   let board: String
   let title: String
   @State private var threads: Posts = []
   @State private var loading: Bool = true
   @SceneStorage("catalog_search") private var searchText = ""
-
+  
   @StateObject private var prefetcher = CatalogViewPrefetcher()
-
+  
   @Binding var selection: ThreadSelection?
-
+  
   var body: some View {
     let filteredThreads = filteredThreads
     if !loading && filteredThreads.isEmpty {
@@ -60,12 +59,10 @@ struct CatalogView: View {
     }
     // Ideally we would only hide this when swiping.
     .statusBar(hidden: true)
-    .onAppear {
-      Task {
-        self.prefetcher.board = board
-        self.prefetcher.client = client
-        await refresh()
-      }
+    .task {
+      self.prefetcher.board = board
+      self.prefetcher.client = client
+      await refresh()
     }
   }
   
@@ -86,11 +83,11 @@ struct CatalogView: View {
   }
   
   var filteredThreads: [Post] {
-      if searchText.isEmpty {
-          return threads
-      } else {
-        return threads.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
-      }
+    if searchText.isEmpty {
+      return threads
+    } else {
+      return threads.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+    }
   }
 }
 

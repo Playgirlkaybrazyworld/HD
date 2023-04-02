@@ -43,14 +43,15 @@ struct ThreadView: View {
     }
     // Ideally we would only hide this when swiping.
     .statusBar(hidden: true)
-    .onAppear {
-      Task {
+    .task {
+      do {
         self.prefetcher.board = board
         self.prefetcher.client = client
         while !Task.isCancelled {
           await refresh()
           try await Task.sleep(nanoseconds:30 * 1_000_000_000)
         }
+      } catch {
       }
     }
   }
