@@ -9,22 +9,11 @@ struct ThreadView: View {
   let title: String
   let board: String
   let threadNo: Int
-  @State private var posts: Posts = []
-  @State private var loading: Bool = true
-  
+  @StateObject private var viewModel = ThreadViewModel()
   @StateObject private var prefetcher = ThreadViewPrefetcher()
   
   var body: some View {
-    if !loading && posts.isEmpty {
-      Text("No posts.")
-    }
-    List(posts){post in
-      PostView(board:board,
-               threadNo:threadNo,
-               post:post)
-      .listRowInsets(EdgeInsets())
-    }
-    .listStyle(.plain)
+    threads
     .navigationTitle(title)
     .navigationBarTitleDisplayMode(.inline)
     .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
@@ -49,19 +38,34 @@ struct ThreadView: View {
     }
   }
   
+  @ViewBuilder
+  var threads: some View {
+    switch viewModel.threadState {
+    case .loading:
+      Text("Loading...")
+    case let .display(posts):
+      List(posts){post in
+        PostView(board:board,
+                 threadNo:threadNo,
+                 post:post)
+        .listRowInsets(EdgeInsets())
+      }
+      .listStyle(.plain)
+    case let .error(error):
+      Text("Error: \(error.localizedDescription)")
+    }
+  }
+  
   func refresh() async {
-    loading = true
     do {
       let thread: ChanThread? = try await client.get(endpoint: .thread(board:board, no:threadNo))
       let posts = thread?.posts ?? []
       self.prefetcher.posts = posts
       withAnimation {
-        loading = false
-        self.posts = posts
+        viewModel.threadState = .display(posts:posts)
       }
     } catch {
-      print("Error loading \(board)/\(threadNo): \(error)")
-      loading = false
+      viewModel.threadState = .error(error:error)
     }
   }
 }
