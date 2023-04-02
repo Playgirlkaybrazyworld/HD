@@ -4,6 +4,7 @@ import SwiftUI
 struct SelectionState: Codable {
   var boardSelection: BoardSelection?
   var threadSelection: ThreadSelection?
+  var threadTopPost: Int?
 }
 
 struct ContentView: View {
@@ -12,6 +13,7 @@ struct ContentView: View {
   @SceneStorage("selection") private var selectionData: Data?
   @State private var boardSelection: BoardSelection?
   @State private var threadSelection: ThreadSelection?
+  @State private var threadTopPost: Int?
 
   var body: some View {
     NavigationSplitView(
@@ -36,7 +38,7 @@ struct ContentView: View {
           ThreadView(title: threadSelection.title,
                      board: threadSelection.board,
                      threadNo: threadSelection.no,
-                     topPost: nil)
+                     topPost: $threadTopPost)
           .id(threadSelection)
         } else {
           Text("Please choose a thread.")
@@ -58,13 +60,16 @@ struct ContentView: View {
           let selection = try? decoder.decode(SelectionState.self, from: selectionData)
           boardSelection = selection?.boardSelection
           threadSelection = selection?.threadSelection
+          threadTopPost = selection?.threadTopPost
         }
       case .background,.inactive:
         let encoder = JSONEncoder()
         let selectionState =
           SelectionState(
             boardSelection:boardSelection,
-            threadSelection:threadSelection)
+            threadSelection:threadSelection,
+            threadTopPost:threadTopPost
+          )
         selectionData = try? encoder.encode(selectionState)
       default:
         break

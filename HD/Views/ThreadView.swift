@@ -9,14 +9,15 @@ struct ThreadView: View {
   let title: String
   let board: String
   let threadNo: Int
-  @StateObject private var viewModel : ThreadViewModel
+  @Binding private var topPost: Int?
+  @StateObject private var viewModel = ThreadViewModel()
   @StateObject private var prefetcher = ThreadViewPrefetcher()
   
-  init(title: String, board: String, threadNo: Int, topPost: Int?) {
+  init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>) {
     self.title = title
     self.board = board
     self.threadNo = threadNo
-    self._viewModel = StateObject(wrappedValue: ThreadViewModel(topPost:topPost))
+    self._topPost = topPost
   }
 
   var body: some View {
@@ -34,6 +35,9 @@ struct ThreadView: View {
           viewModel.scrollToPostNoAnimated = false
           viewModel.scrollToPostNo = nil
         }
+      }
+      .onChange(of: viewModel.topVisiblePost) {topVisiblePost in
+        topPost = topVisiblePost
       }
     }
     .environment(\.openURL, OpenURLAction { url in
@@ -94,7 +98,7 @@ struct ThreadView: View {
       let posts = thread?.posts ?? []
       self.prefetcher.posts = posts
       withAnimation {
-        if case let .loading(topPost) = viewModel.threadState {
+        if case .loading = viewModel.threadState {
           if let topPost {
             viewModel.scrollToPostNo = topPost
             viewModel.scrollToPostNoAnimated = true
@@ -106,11 +110,5 @@ struct ThreadView: View {
     } catch {
       viewModel.threadState = .error(error:error)
     }
-  }
-}
-
-struct ThreadView_Previews: PreviewProvider {
-  static var previews: some View {
-    Text("TBD")
   }
 }

@@ -3,24 +3,23 @@ import FourChan
 
 class ThreadViewModel : ObservableObject {
   @Published var scrollToPostNo: PostNumber?
-  @Published var threadState: ThreadState
-  
-  init(topPost: PostNumber?) {
-    threadState = .loading(topPost:topPost)
-  }
-  
+  @Published var threadState: ThreadState = .loading
+  @Published var topVisiblePost: PostNumber?
+    
   var visiblePosts = Set<PostNumber>()
   var scrollToPostNoAnimated: Bool = false
   
   func appeared(post: PostNumber) {
     visiblePosts.insert(post)
+    topVisiblePost = computeTopVisiblePost()
   }
   
   func disappeared(post: PostNumber) {
     visiblePosts.remove(post)
+    topVisiblePost = computeTopVisiblePost()
   }
   
-  var topVisiblePost: PostNumber? {
+  func computeTopVisiblePost() -> PostNumber? {
     visiblePosts.sorted().first
   }
   
@@ -33,7 +32,7 @@ class ThreadViewModel : ObservableObject {
 }
 
 public enum ThreadState {
-  case loading(topPost: PostNumber?)
+  case loading
   case display(posts: [Post])
   case error(error: Error)
 }
