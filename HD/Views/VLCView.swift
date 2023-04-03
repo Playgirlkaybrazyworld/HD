@@ -2,7 +2,20 @@ import SwiftUI
 import VLCKitSPM
 import UIKit
 
-struct VLCView: UIViewControllerRepresentable {
+struct VLCView: View {
+  let mediaURL: URL
+  let width: Int
+  let height: Int
+  
+  var body: some View {
+    VLCViewImpl(mediaURL: mediaURL, width: width, height: height)
+      .aspectRatio(CGSize(width:width, height:height), contentMode: .fit)
+      .frame(maxWidth:.infinity)
+  }
+
+}
+
+struct VLCViewImpl: UIViewControllerRepresentable {
   typealias UIViewControllerType = VLCViewController
   @Environment(\.scenePhase) private var scenePhase
 
