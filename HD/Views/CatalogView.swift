@@ -88,7 +88,9 @@ struct CatalogView: View {
     if searchText.isEmpty {
       return threads
     } else {
-      return threads.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+      return threads.filter {
+        $0.contains(text:searchText)
+      }
     }
   }
 }

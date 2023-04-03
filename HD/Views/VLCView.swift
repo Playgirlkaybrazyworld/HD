@@ -10,7 +10,6 @@ struct VLCView: View {
   var body: some View {
     VLCViewImpl(mediaURL: mediaURL, width: width, height: height)
       .aspectRatio(CGSize(width:width, height:height), contentMode: .fit)
-      .frame(maxWidth:.infinity)
   }
 
 }

@@ -34,6 +34,7 @@
 		3691E80D29D9458500BFE78F /* PostURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691E80C29D9458500BFE78F /* PostURL.swift */; };
 		3691E81129D9505200BFE78F /* CatalogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691E81029D9505200BFE78F /* CatalogViewModel.swift */; };
 		3691E81329D9538200BFE78F /* BoardsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691E81229D9538200BFE78F /* BoardsViewModel.swift */; };
+		3691E81529DB2B6B00BFE78F /* Post+search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691E81429DB2B6B00BFE78F /* Post+search.swift */; };
 		36EC2EF129C7EF990012F438 /* FourChan in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF029C7EF990012F438 /* FourChan */; };
 		36EC2EF429C7F12A0012F438 /* HTMLString in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF329C7F12A0012F438 /* HTMLString */; };
 		36EC2EF929C815FC0012F438 /* SwiftyGif in Frameworks */ = {isa = PBXBuildFile; productRef = 36EC2EF829C815FC0012F438 /* SwiftyGif */; };
@@ -68,6 +69,7 @@
 		3691E80C29D9458500BFE78F /* PostURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostURL.swift; sourceTree = "<group>"; };
 		3691E81029D9505200BFE78F /* CatalogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogViewModel.swift; sourceTree = "<group>"; };
 		3691E81229D9538200BFE78F /* BoardsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsViewModel.swift; sourceTree = "<group>"; };
+		3691E81429DB2B6B00BFE78F /* Post+search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Post+search.swift"; sourceTree = "<group>"; };
 		36EC2EFA29C816720012F438 /* AnimatedGIFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedGIFView.swift; sourceTree = "<group>"; };
 		36EC2EFD29C8295C0012F438 /* VLCView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLCView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -179,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				3691E80C29D9458500BFE78F /* PostURL.swift */,
+				3691E81429DB2B6B00BFE78F /* Post+search.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -297,6 +300,7 @@
 				3656CEE529B853EF00C64299 /* ImageView.swift in Sources */,
 				3656CED529B8429200C64299 /* ContentView.swift in Sources */,
 				3656CEDD29B8498800C64299 /* ThreadView.swift in Sources */,
+				3691E81529DB2B6B00BFE78F /* Post+search.swift in Sources */,
 				3656CEBD29B6FCF000C64299 /* HDApp.swift in Sources */,
 				366B689629BD30B300B5BC0E /* BoardsListView.swift in Sources */,
 				3656CEE329B850D400C64299 /* ThumbnailView.swift in Sources */,
