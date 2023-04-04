@@ -10,6 +10,7 @@ struct PlayButton: View {
       isPlaying.toggle()
     } label: {
       Image(systemName: isPlaying ? "pause" : "play")
+      .frame(minWidth:30, minHeight:30)
     }
   }
 }
@@ -22,6 +23,7 @@ struct MuteButton: View {
       isMuted.toggle()
     } label: {
       Image(systemName: isMuted ? "speaker" : "speaker.slash")
+      .frame(minWidth:30, minHeight:30)
     }
   }
 }
@@ -37,7 +39,7 @@ struct VLCView: View {
   
   var body: some View {
     video
-      .overlay(controls.padding(4), alignment:.bottomTrailing)
+      .overlay(controls.padding(8), alignment:.bottomTrailing)
   }
   
   var video: some View {
@@ -81,6 +83,7 @@ struct VLCViewImpl: UIViewControllerRepresentable {
     if let mediaListPlayer = uiViewController.mediaListPlayer,
        let view = uiViewController.view {
       if scenePhase == .active {
+        print("numberOfAudioTracks: \(mediaListPlayer.mediaPlayer.numberOfAudioTracks)")
         if let vlcAudio = mediaListPlayer.mediaPlayer.audio {
           let isMuted = vlcAudio.volume == 0
           if isMuted != self.isMuted {
