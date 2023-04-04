@@ -12,7 +12,8 @@ struct ThreadView: View {
   @Binding private var topPost: Int?
   @StateObject private var viewModel = ThreadViewModel()
   @StateObject private var prefetcher = ThreadViewPrefetcher()
-  
+  @SceneStorage("thread_search") private var searchText = ""
+
   init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>) {
     self.title = title
     self.board = board
@@ -23,6 +24,10 @@ struct ThreadView: View {
   var body: some View {
     ScrollViewReader{ scrollViewProxy in
       posts
+      .refreshable {
+        await refresh()
+      }
+      .searchable(text: $searchText)
       .navigationTitle(title)
       .navigationBarTitleDisplayMode(.inline)
       .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
@@ -73,7 +78,11 @@ struct ThreadView: View {
     case .loading:
       Text("Loading...")
     case let .display(posts):
-      List(posts){post in
+      let filteredPosts = filter(posts:posts)
+      if filteredPosts.isEmpty {
+        Text("No posts match search text.")
+      }
+      List(filteredPosts){post in
         PostView(board:board,
                  threadNo:threadNo,
                  post:post)
@@ -109,6 +118,16 @@ struct ThreadView: View {
       }
     } catch {
       viewModel.threadState = .error(error:error)
+    }
+  }
+  
+  func filter(posts: [Post]) -> [Post] {
+    if searchText.isEmpty {
+      return posts
+    } else {
+      return posts.filter {
+        $0.contains(text:searchText)
+      }
     }
   }
 }

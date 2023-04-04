@@ -94,9 +94,3 @@ struct CatalogView: View {
     }
   }
 }
-
-struct BoardView_Previews: PreviewProvider {
-  static var previews: some View {
-    Text("TBD")
-  }
-}
