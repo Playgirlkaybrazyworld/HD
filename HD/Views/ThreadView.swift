@@ -68,6 +68,7 @@ struct ThreadView: View {
           try await Task.sleep(nanoseconds:30 * 1_000_000_000)
         }
       } catch {
+        print("Could not refresh thread: \(error.localizedDescription)")
       }
     }
   }

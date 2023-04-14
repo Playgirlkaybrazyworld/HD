@@ -47,7 +47,8 @@ struct ContentView: View {
     )
     .environmentObject(client)
     .onChange(of: boardSelection) { _ in
-      if threadSelection?.board != boardSelection?.board {
+      if threadSelection?.board != nil &&
+        threadSelection?.board != boardSelection?.board {
         threadSelection = nil
       }
     }
@@ -62,15 +63,19 @@ struct ContentView: View {
           threadSelection = selection?.threadSelection
           threadTopPost = selection?.threadTopPost
         }
-      case .background,.inactive:
-        let encoder = JSONEncoder()
-        let selectionState =
+      case .inactive,.background:
+        if boardSelection != nil {
+          let encoder = JSONEncoder()
+          let selectionState =
           SelectionState(
             boardSelection:boardSelection,
             threadSelection:threadSelection,
             threadTopPost:threadTopPost
           )
-        selectionData = try? encoder.encode(selectionState)
+          if let newSelectionData = try? encoder.encode(selectionState) {
+            selectionData = newSelectionData
+          }
+        }
       default:
         break
       }
