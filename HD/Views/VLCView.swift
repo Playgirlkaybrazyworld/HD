@@ -34,12 +34,20 @@ struct VLCView: View {
   let width: Int
   let height: Int
   
+  @State private var showControls = false
   @State private var isMuted: Bool = true
   @State private var isPlaying: Bool = true
   
   var body: some View {
     video
-      .overlay(controls.padding(8), alignment:.bottomTrailing)
+      .onTapGesture() {
+        showControls.toggle()
+      }
+      .overlay(
+        controls.padding(8)
+        .opacity(showControls ? 1 : 0),
+        alignment:.bottomTrailing)
+
   }
   
   var video: some View {
