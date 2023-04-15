@@ -2,33 +2,6 @@ import SwiftUI
 import VLCKitSPM
 import UIKit
 
-struct PlayButton: View {
-  @Binding var isPlaying: Bool
-
-  var body: some View {
-    Button{
-      isPlaying.toggle()
-    } label: {
-      Image(systemName: isPlaying ? "pause" : "play")
-      .frame(minWidth:30, minHeight:30)
-    }
-  }
-}
-
-struct MuteButton: View {
-  @Binding var isMuted: Bool
-  
-  var body: some View {
-    Button{
-      isMuted.toggle()
-    } label: {
-      Image(systemName: isMuted ? "speaker" : "speaker.slash")
-      .frame(minWidth:30, minHeight:30)
-    }
-  }
-}
-
-
 struct VLCView: View {
   let mediaURL: URL
   let width: Int
