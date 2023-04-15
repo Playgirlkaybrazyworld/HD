@@ -17,18 +17,14 @@ struct BoardsListView: View {
   var body: some View {
     boards
     .listStyle(.sidebar)
+    .refreshable {
+      await refresh()
+    }
     .searchable(text: $searchText)
     .navigationTitle("Boards")
     .navigationBarTitleDisplayMode(.inline)
     .task {
-      do {
-        let boards: Boards = try await client.get(endpoint: .boards)
-        withAnimation {
-          viewModel.boardsState = .display(boards:boards.boards)
-        }
-      } catch {
-        viewModel.boardsState = .error(error: error)
-      }
+      await refresh()
     }
   }
   
@@ -44,6 +40,17 @@ struct BoardsListView: View {
       }
     case let .error(error):
       Text("Error: \(error.localizedDescription)")
+    }
+  }
+  
+  func refresh() async {
+    do {
+      let boards: Boards = try await client.get(endpoint: .boards)
+      withAnimation {
+        viewModel.boardsState = .display(boards:boards.boards)
+      }
+    } catch {
+      viewModel.boardsState = .error(error: error)
     }
   }
   
