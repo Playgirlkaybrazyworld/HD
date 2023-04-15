@@ -118,7 +118,12 @@ struct ThreadView: View {
         viewModel.threadState = .display(posts:posts)
       }
     } catch {
-      viewModel.threadState = .error(error:error)
+      print(error.localizedDescription)
+      if case .display(_) = viewModel.threadState {
+        // do nothing
+      } else {
+        viewModel.threadState = .error(error: error)
+      }
     }
   }
   

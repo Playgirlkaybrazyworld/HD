@@ -79,7 +79,12 @@ struct CatalogView: View {
       let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
       threads = catalog.flatMap(\.threads)
     } catch {
-      viewModel.catalogState = .error(error: error)
+      print(error.localizedDescription)
+      if case .display(_) = viewModel.catalogState {
+        // do nothing
+      } else {
+        viewModel.catalogState = .error(error: error)
+      }
     }
     self.prefetcher.posts = threads
     withAnimation {

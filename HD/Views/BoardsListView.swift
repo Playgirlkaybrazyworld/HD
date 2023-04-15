@@ -53,7 +53,12 @@ struct BoardsListView: View {
         viewModel.boardsState = .display(boards:boards.boards)
       }
     } catch {
-      viewModel.boardsState = .error(error: error)
+      print(error.localizedDescription)
+      if case .display(_) = viewModel.boardsState {
+        // do nothing
+      } else {
+        viewModel.boardsState = .error(error: error)
+      }
     }
   }
   
