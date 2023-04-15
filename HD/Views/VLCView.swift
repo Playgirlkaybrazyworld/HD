@@ -4,7 +4,7 @@ import UIKit
 
 struct PlayButton: View {
   @Binding var isPlaying: Bool
-  
+
   var body: some View {
     Button{
       isPlaying.toggle()
@@ -37,7 +37,8 @@ struct VLCView: View {
   @State private var showControls = false
   @State private var isMuted: Bool = true
   @State private var isPlaying: Bool = true
-  
+  @State private var numberOfAudioTracks: Int? = nil
+
   var body: some View {
     video
       .onTapGesture() {
@@ -51,14 +52,16 @@ struct VLCView: View {
   }
   
   var video: some View {
-    VLCViewImpl(mediaURL: mediaURL, width: width, height: height, isPlaying: isPlaying, isMuted: isMuted)
+    VLCViewImpl(mediaURL: mediaURL, width: width, height: height, isPlaying: isPlaying, isMuted: isMuted, numberOfAudioTracks: $numberOfAudioTracks)
       .aspectRatio(CGSize(width:width, height:height), contentMode: .fit)
   }
   
   var controls: some View {
     HStack{
       PlayButton(isPlaying: $isPlaying)
-      MuteButton(isMuted: $isMuted)
+      if numberOfAudioTracks ?? 0 > 0 {
+        MuteButton(isMuted: $isMuted)
+      }
     }
     .padding(4)
     .background(
@@ -67,6 +70,25 @@ struct VLCView: View {
     )
     
   }
+}
+
+
+class Coordinator: NSObject, VLCMediaPlayerDelegate {
+  @Binding
+  public var numberOfAudioTracks: Int?
+  public var mediaPlayer: VLCMediaPlayer!
+  
+  init(numberOfAudioTracks: Binding<Int?>) {
+    self._numberOfAudioTracks = numberOfAudioTracks
+  }
+  
+  func mediaPlayerStateChanged(_ aNotification: Notification!) {
+    if case .playing = mediaPlayer.state {
+      print("mediaPlayer.numberOfAudioTracks \(mediaPlayer.numberOfAudioTracks)")
+      numberOfAudioTracks = Int(mediaPlayer.numberOfAudioTracks)
+    }
+  }
+
 }
 
 struct VLCViewImpl: UIViewControllerRepresentable {
@@ -78,9 +100,15 @@ struct VLCViewImpl: UIViewControllerRepresentable {
   let height: Int
   let isPlaying: Bool
   let isMuted: Bool
+  @Binding var numberOfAudioTracks: Int?
+  
+  func makeCoordinator() -> Coordinator {
+    return Coordinator(numberOfAudioTracks: _numberOfAudioTracks)
+  }
   
   func makeUIViewController(context: Context) -> VLCViewController {
     let vc = VLCViewController()
+    vc.coordinator = context.coordinator
     vc.mediaURL = mediaURL
     vc.width = width
     vc.height = height
@@ -91,7 +119,7 @@ struct VLCViewImpl: UIViewControllerRepresentable {
     if let mediaListPlayer = uiViewController.mediaListPlayer,
        let view = uiViewController.view {
       if scenePhase == .active {
-        print("numberOfAudioTracks: \(mediaListPlayer.mediaPlayer.numberOfAudioTracks)")
+        numberOfAudioTracks = Int(mediaListPlayer.mediaPlayer.numberOfAudioTracks)
         if let vlcAudio = mediaListPlayer.mediaPlayer.audio {
           let isMuted = vlcAudio.volume == 0
           if isMuted != self.isMuted {
@@ -116,12 +144,13 @@ struct VLCViewImpl: UIViewControllerRepresentable {
   }
 }
 
-class VLCViewController: UIViewController, VLCMediaListPlayerDelegate {
+class VLCViewController: UIViewController {
   var mediaURL: URL!
   var width: Int = 0
   var height: Int = 0
   
   var mediaListPlayer: VLCMediaListPlayer!
+  var coordinator: Coordinator!
   
   override func loadView() {
     view = UIView()
@@ -130,9 +159,12 @@ class VLCViewController: UIViewController, VLCMediaListPlayerDelegate {
   override func viewDidAppear(_ animated: Bool) {
     guard let view = view else { return }
     mediaListPlayer = VLCMediaListPlayer(drawable:view)
-    mediaListPlayer.delegate = self
     mediaListPlayer.repeatMode = .repeatCurrentItem
-    
+    if let coordinator {
+      coordinator.mediaPlayer = mediaListPlayer.mediaPlayer
+      mediaListPlayer.mediaPlayer.delegate = coordinator
+    }
+
     let media = VLCMedia(url: mediaURL)
     let mediaList = VLCMediaList()
     mediaList.add(media)
@@ -147,7 +179,11 @@ class VLCViewController: UIViewController, VLCMediaListPlayerDelegate {
     if mediaListPlayer != nil {
       mediaListPlayer.stop()
       mediaListPlayer.delegate = nil
+      mediaListPlayer.mediaPlayer.delegate = nil
       mediaListPlayer = nil
+      if let coordinator {
+        coordinator.mediaPlayer = nil
+      }
     }
   }
 }
