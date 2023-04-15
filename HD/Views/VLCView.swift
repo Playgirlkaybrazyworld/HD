@@ -55,7 +55,7 @@ class Coordinator: NSObject, VLCMediaPlayerDelegate {
     self._numberOfAudioTracks = numberOfAudioTracks
   }
   
-  func mediaPlayerStateChanged(_ aNotification: Notification!) {
+  func mediaPlayerStateChanged(_ aNotification: Notification ) {
     if case .playing = mediaPlayer.state {
       print("mediaPlayer.numberOfAudioTracks \(mediaPlayer.numberOfAudioTracks)")
       numberOfAudioTracks = Int(mediaPlayer.numberOfAudioTracks)

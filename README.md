@@ -32,6 +32,7 @@ A High Definition 4Chan image board viewer.
 - No posting.
 - No hiding of already seen threads.
 - 4chan data is not cached.
+- Occasionally crashes when selecting threads. (Seems like an iOS 16 SwiftUI List bug.)
 
 ## Requirements
 
