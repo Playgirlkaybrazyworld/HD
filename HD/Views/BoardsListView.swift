@@ -21,6 +21,9 @@ struct BoardsListView: View {
       await refresh()
     }
     .searchable(text: $searchText)
+    .onChange(of: searchText) {_ in
+      selection = nil
+    }
     .navigationTitle("Boards")
     .navigationBarTitleDisplayMode(.inline)
     .task {

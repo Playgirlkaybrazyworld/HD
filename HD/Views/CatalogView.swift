@@ -28,6 +28,9 @@ struct CatalogView: View {
       await refresh()
     }
     .searchable(text: $searchText)
+    .onChange(of: searchText) {_ in
+      selection = nil
+    }
     .navigationTitle(title)
     .navigationBarTitleDisplayMode(.inline)
     .listStyle(.plain)
