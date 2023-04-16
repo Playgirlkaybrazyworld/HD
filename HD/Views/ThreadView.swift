@@ -5,15 +5,13 @@ import SwiftUI
 import UIKit
 
 struct ThreadView: View {
-  @EnvironmentObject private var client: Client
   let title: String
   let board: String
   let threadNo: Int
   @Binding private var topPost: Int?
-  @StateObject private var viewModel = ThreadViewModel()
-  @StateObject private var prefetcher = ThreadViewPrefetcher()
-  @SceneStorage("thread_search") private var searchText = ""
 
+  @SceneStorage("thread_search") private var searchText = ""
+  
   init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>) {
     self.title = title
     self.board = board
@@ -22,12 +20,35 @@ struct ThreadView: View {
   }
 
   var body: some View {
+    FilteredThreadView(title:title, board:board, threadNo: threadNo, topPost: _topPost, searchText:searchText)
+    .searchable(text: $searchText)
+  }
+}
+
+struct FilteredThreadView: View {
+  @EnvironmentObject private var client: Client
+  let title: String
+  let board: String
+  let threadNo: Int
+  @Binding private var topPost: Int?
+  let searchText: String
+  @StateObject private var viewModel = ThreadViewModel()
+  @StateObject private var prefetcher = ThreadViewPrefetcher()
+
+  init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>, searchText: String) {
+    self.title = title
+    self.board = board
+    self.threadNo = threadNo
+    self._topPost = topPost
+    self.searchText = searchText
+  }
+
+  var body: some View {
     ScrollViewReader{ scrollViewProxy in
       posts
       .refreshable {
         await refresh()
       }
-      .searchable(text: $searchText)
       .navigationTitle(title)
       .navigationBarTitleDisplayMode(.inline)
       .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
