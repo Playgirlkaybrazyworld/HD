@@ -1,4 +1,4 @@
-import Foundation
+import Blackbird
 import FourChan
 import Network
 import SwiftUI
@@ -9,67 +9,76 @@ struct BoardSelection: Codable, Hashable {
 }
 
 struct BoardsListView: View {
-  @EnvironmentObject private var client: Client
-  @StateObject private var viewModel = BoardsViewModel()
   @SceneStorage("boards_search") private var searchText = ""
   @Binding var selection: BoardSelection?
   
   var body: some View {
-    boards
-    .listStyle(.sidebar)
-    .refreshable {
-      await refresh()
-    }
-    .searchable(text: $searchText)
-    .onChange(of: searchText) {_ in
-      selection = nil
-    }
-    .navigationTitle("Boards")
-    .navigationBarTitleDisplayMode(.inline)
-    .task {
-      await refresh()
-    }
+    FilteredBoardsListView(selection:_selection, searchText:searchText)
+      .searchable(text: $searchText)
+  }
+}
+
+struct FilteredBoardsListView: View {
+  @EnvironmentObject private var client: Client
+  @Binding var selection: BoardSelection?
+  @Environment(\.blackbirdDatabase) var database
+  @BlackbirdLiveModels<Board> var boards : Blackbird.LiveResults<Board>
+  
+  init(selection: Binding<BoardSelection?>, searchText:String) {
+    _selection = selection
+    _boards = .init({
+      try await Board.read(
+        from: $0,
+        matching: searchText.isEmpty ? nil :
+          (.like(\.$id, "%\(searchText)%") ||
+            .like(\.$title, "%\(searchText)%")),
+        orderBy: .ascending(\.$id)
+      )
+    })
+  }
+  
+  var body: some View {
+    boardsView
+      .listStyle(.sidebar)
+      .refreshable {
+        await refresh()
+      }
+      .navigationTitle("Boards")
+      .navigationBarTitleDisplayMode(.inline)
+      .task {
+        await refresh()
+      }
   }
   
   @ViewBuilder
-  var boards: some View {
-    switch viewModel.boardsState {
-    case .loading:
-      EmptyView()
-    case let .display(boards):
-      List(filter(boards:boards), selection: $selection) { board in
+  var boardsView: some View {
+    if boards.didLoad {
+      List(boards.results, selection: $selection) { board in
         BoardsRowView(board:board)
           .tag(BoardSelection(board:board.id, title:board.title))
       }
-    case let .error(error):
-      Text("Error: \(error.localizedDescription)")
+    } else {
+      EmptyView()
     }
   }
   
   func refresh() async {
     do {
-      let boards: Boards = try await client.get(endpoint: .boards)
-      withAnimation {
-        viewModel.boardsState = .display(boards:boards.boards)
+      let fourChanBoards: FourChan.Boards = try await client.get(endpoint: .boards)
+      let boards =
+      fourChanBoards.boards.map { fourChanBoard in
+        Board(id: fourChanBoard.id, title: fourChanBoard.title)
+      }
+      try await database!.transaction { core in
+        // Remove all old rows.
+        try await Board.queryIsolated(in:database!, core: core, "DELETE FROM $T")
+        // Add all new rows.
+        for board in boards {
+          try await board.writeIsolated(to: database!, core: core)
+        }
       }
     } catch {
       print(error.localizedDescription)
-      if case .display(_) = viewModel.boardsState {
-        // do nothing
-      } else {
-        viewModel.boardsState = .error(error: error)
-      }
-    }
-  }
-  
-  func filter(boards: [Board]) -> [Board] {
-    if searchText.isEmpty {
-      return boards
-    } else {
-      return boards.filter { board in
-        board.id.localizedCaseInsensitiveContains(searchText) ||
-        board.title.localizedCaseInsensitiveContains(searchText)
-      }
     }
   }
 }
