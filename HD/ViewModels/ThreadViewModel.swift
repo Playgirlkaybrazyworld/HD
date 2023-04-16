@@ -1,5 +1,6 @@
 import Foundation
-import FourChan
+
+typealias PostNumber = Int
 
 class ThreadViewModel : ObservableObject {
   @Published var scrollToPostNo: PostNumber?
@@ -31,7 +32,7 @@ class ThreadViewModel : ObservableObject {
   }
 }
 
-public enum ThreadState {
+enum ThreadState {
   case loading
   case display(posts: [Post])
   case error(error: Error)

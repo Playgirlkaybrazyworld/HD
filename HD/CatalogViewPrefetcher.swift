@@ -1,4 +1,3 @@
-import FourChan
 import Network
 import Nuke
 import SwiftUI
@@ -9,7 +8,7 @@ final class CatalogViewPrefetcher: NSObject, ObservableObject, UICollectionViewD
   
   var client: Client!
   var board: String!
-  var posts: Posts = []
+  var posts: [Post] = []
   
   func collectionView(_: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
     let imageURLs = getImageURLs(for: indexPaths)

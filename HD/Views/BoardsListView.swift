@@ -64,7 +64,7 @@ struct FilteredBoardsListView: View {
   
   func refresh() async {
     do {
-      let fourChanBoards: FourChan.Boards = try await client.get(endpoint: .boards)
+      let fourChanBoards: Boards = try await client.get(endpoint: .boards)
       let boards =
       fourChanBoards.boards.map { fourChanBoard in
         Board(id: fourChanBoard.id, title: fourChanBoard.title)

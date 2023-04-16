@@ -1,3 +1,4 @@
+import Blackbird
 import FourChan
 import Introspect
 import Network
@@ -11,25 +12,51 @@ struct ThreadSelection: Codable, Hashable {
 }
 
 struct CatalogView: View {
+  let board: String
+  let title: String
+
+  @SceneStorage("catalog_search") private var searchText = ""
+  @Binding var selection: ThreadSelection?
+  
+  var body: some View {
+    FilteredCatalogView(board:board, title:title, selection:_selection, searchText:searchText)
+      .searchable(text: $searchText)
+  }
+}
+
+struct FilteredCatalogView: View {
   @EnvironmentObject private var client: Client
   
   let board: String
   let title: String
-  @StateObject private var viewModel = CatalogViewModel()
-  @SceneStorage("catalog_search") private var searchText = ""
-  
+  @Environment(\.blackbirdDatabase) var database
+  @BlackbirdLiveModels<Post> var threads : Blackbird.LiveResults<Post>
+
   @StateObject private var prefetcher = CatalogViewPrefetcher()
   
   @Binding var selection: ThreadSelection?
   
+  init(board:String, title:String,
+       selection: Binding<ThreadSelection?>, searchText:String) {
+    self.board = board
+    self.title = title
+    _selection = selection
+    _threads = .init({
+      try await Post.read(
+        from: $0,
+        matching: searchText.isEmpty ? \.$board == board :
+          (\.$board == board &&
+          (.like(\.$sub, "%\(searchText)%") ||
+            .like(\.$com, "%\(searchText)%"))),
+        orderBy: .ascending(\.$id)
+      )
+    })
+  }
+
   var body: some View {
-    threads
+    threadsView
     .refreshable {
       await refresh()
-    }
-    .searchable(text: $searchText)
-    .onChange(of: searchText) {_ in
-      selection = nil
     }
     .navigationTitle(title)
     .navigationBarTitleDisplayMode(.inline)
@@ -51,16 +78,9 @@ struct CatalogView: View {
   }
   
   @ViewBuilder
-  var threads : some View {
-    switch viewModel.catalogState {
-    case .loading:
-      EmptyView()
-    case let .display(threads):
-      let filteredThreads = filter(threads:threads)
-      if filteredThreads.isEmpty {
-        Text("No threads match search text.")
-      }
-      List(filteredThreads, id:\.id, selection: $selection){ thread in
+  var threadsView : some View {
+    if threads.didLoad {
+      List(threads.results, id:\.id, selection: $selection){ thread in
         CatalogRowView(board:board, thread: thread)
           .tag(ThreadSelection(
             board: board,
@@ -68,37 +88,43 @@ struct CatalogView: View {
             no: thread.no
           ))
       }
-    case let .error(error):
-      Text("Error: \(error.localizedDescription)")
+    } else {
+      EmptyView()
     }
   }
   
   func refresh() async {
-    var threads:[Post] = []
     do {
       let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
-      threads = catalog.flatMap(\.threads)
+      let fourChanThreads = catalog.flatMap(\.threads)
+      let threads = fourChanThreads.map {
+        Post(
+          id: $0.id,
+          board: board,
+          sub: $0.sub,
+          com: $0.com,
+          tim: $0.tim,
+          filename: $0.filename,
+          ext: $0.ext,
+          w: $0.w,
+          h: $0.h,
+          tn_w: $0.tn_w,
+          tn_h: $0.tn_h,
+          replies: $0.replies,
+          images: $0.images
+        )
+      }
+      self.prefetcher.posts = threads
+      try await database!.transaction { core in
+        // Remove all old rows.
+        try await Post.queryIsolated(in:database!, core: core, "DELETE FROM $T WHERE board = ?", board)
+        // Add all new rows.
+        for catalogThread in threads {
+          try await catalogThread.writeIsolated(to: database!, core: core)
+        }
+      }
     } catch {
       print(error.localizedDescription)
-      if case .display(_) = viewModel.catalogState {
-        // do nothing
-      } else {
-        viewModel.catalogState = .error(error: error)
-      }
-    }
-    self.prefetcher.posts = threads
-    withAnimation {
-      viewModel.catalogState = .display(threads: threads)
-    }
-  }
-  
-  func filter(threads: [Post]) -> [Post] {
-    if searchText.isEmpty {
-      return threads
-    } else {
-      return threads.filter {
-        $0.contains(text:searchText)
-      }
     }
   }
 }

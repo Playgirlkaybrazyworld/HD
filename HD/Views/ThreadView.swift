@@ -105,7 +105,24 @@ struct ThreadView: View {
   func refresh() async {
     do {
       let thread: ChanThread? = try await client.get(endpoint: .thread(board:board, no:threadNo))
-      let posts = thread?.posts ?? []
+      let fourChanPosts = thread?.posts ?? []
+      let posts: [Post] = fourChanPosts.map {
+        Post(
+          id: $0.id,
+          board: board,
+          sub: $0.sub,
+          com: $0.com,
+          tim: $0.tim,
+          filename: $0.filename,
+          ext: $0.ext,
+          w: $0.w,
+          h: $0.h,
+          tn_w: $0.tn_w,
+          tn_h: $0.tn_h,
+          replies: $0.replies,
+          images: $0.images
+        )
+      }
       self.prefetcher.posts = posts
       withAnimation {
         if case .loading = viewModel.threadState {
