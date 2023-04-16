@@ -92,7 +92,6 @@ struct VLCViewImpl: UIViewControllerRepresentable {
     if let mediaListPlayer = uiViewController.mediaListPlayer,
        let view = uiViewController.view {
       if scenePhase == .active {
-        numberOfAudioTracks = Int(mediaListPlayer.mediaPlayer.numberOfAudioTracks)
         if let vlcAudio = mediaListPlayer.mediaPlayer.audio {
           let isMuted = vlcAudio.volume == 0
           if isMuted != self.isMuted {
