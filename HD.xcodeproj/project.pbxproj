@@ -28,6 +28,7 @@
 		3656CEF929B984CF00C64299 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CEF829B984CF00C64299 /* NukeExtensions */; };
 		3656CEFB29B984CF00C64299 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CEFA29B984CF00C64299 /* NukeUI */; };
 		3656CEFD29B984CF00C64299 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = 3656CEFC29B984CF00C64299 /* NukeVideo */; };
+		3668FA3429EC865B0004D521 /* Blackbird in Frameworks */ = {isa = PBXBuildFile; productRef = 3668FA3329EC865B0004D521 /* Blackbird */; };
 		366B688F29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366B688E29B9B0C300B5BC0E /* CatalogViewPrefetcher.swift */; };
 		366B689629BD30B300B5BC0E /* BoardsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 366B689529BD30B300B5BC0E /* BoardsListView.swift */; };
 		3691E80A29D92B6900BFE78F /* ThreadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691E80929D92B6900BFE78F /* ThreadViewModel.swift */; };
@@ -86,6 +87,7 @@
 				36EC2EF429C7F12A0012F438 /* HTMLString in Frameworks */,
 				36EC2EF929C815FC0012F438 /* SwiftyGif in Frameworks */,
 				36EC2EF129C7EF990012F438 /* FourChan in Frameworks */,
+				3668FA3429EC865B0004D521 /* Blackbird in Frameworks */,
 				3656CEFB29B984CF00C64299 /* NukeUI in Frameworks */,
 				3656CEEF29B971AC00C64299 /* Introspect in Frameworks */,
 				36EC2F0129C82C810012F438 /* VLCKitSPM in Frameworks */,
@@ -228,6 +230,7 @@
 				36EC2EF329C7F12A0012F438 /* HTMLString */,
 				36EC2EF829C815FC0012F438 /* SwiftyGif */,
 				36EC2F0029C82C810012F438 /* VLCKitSPM */,
+				3668FA3329EC865B0004D521 /* Blackbird */,
 			);
 			productName = HD;
 			productReference = 3656CEB929B6FCF000C64299 /* HD.app */;
@@ -265,6 +268,7 @@
 				36EC2EF229C7F12A0012F438 /* XCRemoteSwiftPackageReference "HTMLString" */,
 				36EC2EF729C815FC0012F438 /* XCRemoteSwiftPackageReference "SwiftyGif" */,
 				36EC2EFF29C82C810012F438 /* XCRemoteSwiftPackageReference "vlckit-spm" */,
+				3668FA3229EC865B0004D521 /* XCRemoteSwiftPackageReference "Blackbird" */,
 			);
 			productRefGroup = 3656CEBA29B6FCF000C64299 /* Products */;
 			projectDirPath = "";
@@ -541,6 +545,14 @@
 				kind = branch;
 			};
 		};
+		3668FA3229EC865B0004D521 /* XCRemoteSwiftPackageReference "Blackbird" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marcoarment/Blackbird";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		36EC2EEF29C7EF990012F438 /* XCRemoteSwiftPackageReference "FourChanAPI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jackpal/FourChanAPI";
@@ -609,6 +621,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3656CEF529B984CF00C64299 /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = NukeVideo;
+		};
+		3668FA3329EC865B0004D521 /* Blackbird */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3668FA3229EC865B0004D521 /* XCRemoteSwiftPackageReference "Blackbird" */;
+			productName = Blackbird;
 		};
 		36EC2EF029C7EF990012F438 /* FourChan */ = {
 			isa = XCSwiftPackageProductDependency;
