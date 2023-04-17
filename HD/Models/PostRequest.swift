@@ -41,6 +41,6 @@ struct PostRequest: Queryable {
   // This method is not required by Queryable, but it makes it easier
   // to test PlayerRequest.
   func fetchValue(_ db: Database) throws -> [Post] {
-    return try Post.all().filter(threadId:threadId).fetchAll(db)
+    return try Post.all().filter(catalogThreadId:threadId).fetchAll(db)
   }
 }

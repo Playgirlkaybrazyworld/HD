@@ -77,9 +77,8 @@ extension DerivableRequest<Post> {
   ///     let posts: [Post] = try dbWriter.read { db in
   ///         try Post.all().filter(threadId: threadId).fetchAll(db)
   ///     }
-  func filter(threadId: Int) -> Self {
-    // See https://github.com/groue/GRDB.swift/blob/master/README.md#string-comparison
-    filter(sql: "threadId = ?", arguments: [threadId])
+  func filter(catalogThreadId: Int) -> Self {
+    filter(sql: "catalogThreadId = ?", arguments: [catalogThreadId]).orderByPrimaryKey()
   }
   
 //  func threads(boardId: String) -> Self {

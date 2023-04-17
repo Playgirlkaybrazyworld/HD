@@ -1,5 +1,6 @@
-import Introspect
 import FourChan
+import GRDBQuery
+import Introspect
 import Network
 import SwiftUI
 import UIKit
@@ -9,7 +10,7 @@ struct ThreadView: View {
   let board: String
   let threadNo: Int
   @Binding private var topPost: Int?
-
+  
   @SceneStorage("thread_search") private var searchText = ""
   
   init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>) {
@@ -18,10 +19,10 @@ struct ThreadView: View {
     self.threadNo = threadNo
     self._topPost = topPost
   }
-
+  
   var body: some View {
     FilteredThreadView(title:title, board:board, threadNo: threadNo, topPost: _topPost, searchText:searchText)
-    .searchable(text: $searchText)
+      .searchable(text: $searchText)
   }
 }
 
@@ -32,39 +33,47 @@ struct FilteredThreadView: View {
   let threadNo: Int
   @Binding private var topPost: Int?
   let searchText: String
-  @StateObject private var viewModel = ThreadViewModel()
+  
+  /// Write access to the database
+  @Environment(\.appDatabase) private var appDatabase
+  
+  /// The `threads` property is automatically updated when the database changes
+  @Query<PostRequest> private var posts: [Post]
+  
   @StateObject private var prefetcher = ThreadViewPrefetcher()
-
+  @StateObject private var viewModel = ThreadViewModel()
+  
   init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>, searchText: String) {
     self.title = title
     self.board = board
     self.threadNo = threadNo
     self._topPost = topPost
     self.searchText = searchText
+    _posts = .init(PostRequest(threadId:threadNo))
   }
-
+  
   var body: some View {
     ScrollViewReader{ scrollViewProxy in
-      posts
-      .refreshable {
-        await refresh()
-      }
-      .navigationTitle(title)
-      .navigationBarTitleDisplayMode(.inline)
-      .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
-        collectionView.isPrefetchingEnabled = true
-        collectionView.prefetchDataSource = self.prefetcher
-      }
-      .onChange(of: viewModel.scrollToPostNo) { postNo in
-        if let postNo {
-          scrollViewProxy.scrollTo(postNo)
-          viewModel.scrollToPostNoAnimated = false
-          viewModel.scrollToPostNo = nil
+      postsView
+        .refreshable {
+          await refresh()
         }
-      }
-      .onChange(of: viewModel.topVisiblePost) {topVisiblePost in
-        topPost = topVisiblePost
-      }
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
+        .introspect(selector: TargetViewSelector.ancestorOrSiblingContaining) { (collectionView: UICollectionView) in
+          collectionView.isPrefetchingEnabled = true
+          collectionView.prefetchDataSource = self.prefetcher
+        }
+        .onChange(of: viewModel.scrollToPostNo) { postNo in
+          if let postNo {
+            scrollViewProxy.scrollTo(postNo)
+            viewModel.scrollToPostNoAnimated = false
+            viewModel.scrollToPostNo = nil
+          }
+        }
+        .onChange(of: viewModel.topVisiblePost) {topVisiblePost in
+          topPost = topVisiblePost
+        }
     }
     .environment(\.openURL, OpenURLAction { url in
       if let postURL = PostURL(url:url) {
@@ -95,32 +104,21 @@ struct FilteredThreadView: View {
   }
   
   @ViewBuilder
-  var posts: some View {
-    switch viewModel.threadState {
-    case .loading:
-      Text("Loading...")
-    case let .display(posts):
-      let filteredPosts = filter(posts:posts)
-      if filteredPosts.isEmpty {
-        Text("No posts match search text.")
+  var postsView: some View {
+    List(posts){post in
+      PostView(board:board,
+               threadNo:threadNo,
+               post:post)
+      .tag(post.id)
+      .onAppear() {
+        viewModel.appeared(post:post.id)
       }
-      List(filteredPosts){post in
-        PostView(board:board,
-                 threadNo:threadNo,
-                 post:post)
-        .tag(post.id)
-        .onAppear() {
-          viewModel.appeared(post:post.id)
-        }
-        .onDisappear() {
-          viewModel.disappeared(post:post.id)
-        }
-        .listRowInsets(EdgeInsets())
+      .onDisappear() {
+        viewModel.disappeared(post:post.id)
       }
-      .listStyle(.plain)
-    case let .error(error):
-      Text("Error: \(error.localizedDescription)")
+      .listRowInsets(EdgeInsets())
     }
+    .listStyle(.plain)
   }
   
   func refresh() async {
@@ -130,7 +128,7 @@ struct FilteredThreadView: View {
       let posts: [Post] = fourChanPosts.map {
         Post(
           id: $0.id,
-          catalogThreadId: 0, // Filled in later
+          catalogThreadId: threadNo,
           sub: $0.sub,
           com: $0.com,
           tim: $0.tim,
@@ -145,23 +143,9 @@ struct FilteredThreadView: View {
         )
       }
       self.prefetcher.posts = posts
-      withAnimation {
-        if case .loading = viewModel.threadState {
-          if let topPost {
-            viewModel.scrollToPostNo = topPost
-            viewModel.scrollToPostNoAnimated = true
-          }
-        }
-        viewModel.threadState = .display(posts:posts)
-        viewModel.threadState = .display(posts:posts)
-      }
+      try await appDatabase.update(posts:posts)
     } catch {
       print(error.localizedDescription)
-      if case .display(_) = viewModel.threadState {
-        // do nothing
-      } else {
-        viewModel.threadState = .error(error: error)
-      }
     }
   }
   
