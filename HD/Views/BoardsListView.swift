@@ -10,16 +10,6 @@ struct BoardSelection: Codable, Hashable {
 }
 
 struct BoardsListView: View {
-  @SceneStorage("boards_search") private var searchText = ""
-  @Binding var selection: BoardSelection?
-  
-  var body: some View {
-    FilteredBoardsListView(selection:_selection, searchText:searchText)
-      .searchable(text: $searchText)
-  }
-}
-
-struct FilteredBoardsListView: View {
   @EnvironmentObject private var client: Client
   @Binding var selection: BoardSelection?
 
@@ -27,23 +17,16 @@ struct FilteredBoardsListView: View {
   @Environment(\.appDatabase) private var appDatabase
   
   /// The `boards` property is automatically updated when the database changes
-  @Query(BoardRequest(ordering: .byID)) private var boards: [Board]
+  @Query<BoardRequest> private var boards: [Board]
 
-  init(selection: Binding<BoardSelection?>, searchText:String) {
+  init(selection: Binding<BoardSelection?>) {
     _selection = selection
-//    _boards = .init({
-//      try await Board.read(
-//        from: $0,
-//        matching: searchText.isEmpty ? nil :
-//          (.like(\.$id, "%\(searchText)%") ||
-//            .like(\.$title, "%\(searchText)%")),
-//        orderBy: .ascending(\.$id)
-//      )
-//    })
+    _boards = .init(BoardRequest(like:""))
   }
   
   var body: some View {
     boardsView
+      .searchable(text:$boards.like)
       .listStyle(.sidebar)
       .refreshable {
         await refresh()

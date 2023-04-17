@@ -15,38 +15,40 @@ import GRDBQuery
 ///         }
 ///     }
 struct BoardRequest: Queryable {
-    enum Ordering {
-        case byID
+  
+  /// If non-empty, used in a "Like" query
+  var like: String
+  
+  // MARK: - Queryable Implementation
+  
+  static var defaultValue: [Board] { [] }
+  
+  func publisher(in appDatabase: AppDatabase) -> AnyPublisher<[Board], Error> {
+    // Build the publisher from the general-purpose read-only access
+    // granted by `appDatabase.reader`.
+    // Some apps will prefer to call a dedicated method of `appDatabase`.
+    ValueObservation
+      .tracking(fetchValue(_:))
+      .print()
+      .publisher(
+        in: appDatabase.reader,
+        // The `.immediate` scheduling feeds the view right on
+        // subscription, and avoids an undesired animation when the
+        // application starts.
+        scheduling: .immediate)
+      .eraseToAnyPublisher()
+  }
+  
+  // This method is not required by Queryable, but it makes it easier
+  // to test PlayerRequest.
+  func fetchValue(_ db: Database) throws -> [Board] {
+    if like.isEmpty {
+      return try Board.all().orderedByName().fetchAll(db)
+    } else {
+      let like = "%\(like)%"
+      return try Board.all()
+        .filter(sql: "name LIKE ? OR title LIKE ?", arguments: [like, like])
+        .orderedByName().fetchAll(db)
     }
-    
-    /// The ordering used by the player request.
-    var ordering: Ordering
-    
-    // MARK: - Queryable Implementation
-    
-    static var defaultValue: [Board] { [] }
-    
-    func publisher(in appDatabase: AppDatabase) -> AnyPublisher<[Board], Error> {
-        // Build the publisher from the general-purpose read-only access
-        // granted by `appDatabase.reader`.
-        // Some apps will prefer to call a dedicated method of `appDatabase`.
-        ValueObservation
-            .tracking(fetchValue(_:))
-            .publisher(
-                in: appDatabase.reader,
-                // The `.immediate` scheduling feeds the view right on
-                // subscription, and avoids an undesired animation when the
-                // application starts.
-                scheduling: .immediate)
-            .eraseToAnyPublisher()
-    }
-    
-    // This method is not required by Queryable, but it makes it easier
-    // to test PlayerRequest.
-    func fetchValue(_ db: Database) throws -> [Board] {
-        switch ordering {
-        case .byID:
-            return try Board.all().orderedByName().fetchAll(db)
-        }
-    }
+  }
 }
