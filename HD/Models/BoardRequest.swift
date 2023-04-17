@@ -29,7 +29,6 @@ struct BoardRequest: Queryable {
     // Some apps will prefer to call a dedicated method of `appDatabase`.
     ValueObservation
       .tracking(fetchValue(_:))
-      .print()
       .publisher(
         in: appDatabase.reader,
         // The `.immediate` scheduling feeds the view right on

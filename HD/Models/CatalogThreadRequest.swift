@@ -19,6 +19,9 @@ struct CatalogThreadRequest: Queryable {
   /// The ordering used by the player request.
   var boardId: String
   
+  /// If non-empty, used in a "Like" query
+  var like: String
+  
   // MARK: - Queryable Implementation
   
   static var defaultValue: [Post] { [] }
@@ -45,7 +48,19 @@ struct CatalogThreadRequest: Queryable {
       .filter(Column("boardId") == boardId)
     let catalogThreads = try CatalogThread.fetchAll(db, request)
     let threadNos = catalogThreads.map(\.threadNo)
-    let posts = try Post.fetchAll(db,ids:threadNos)
+    var posts = try Post.fetchAll(db,ids:threadNos)
+    if !like.isEmpty {
+      posts = posts.filter{ post in
+        if let sub = post.sub, sub.localizedCaseInsensitiveContains(like) {
+          return true
+        }
+        if let com = post.com, com.localizedCaseInsensitiveContains(like) {
+          return true
+        }
+        return false
+      }
+    }
+
     return posts
   }
 }

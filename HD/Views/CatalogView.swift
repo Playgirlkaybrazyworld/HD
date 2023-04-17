@@ -12,19 +12,6 @@ struct ThreadSelection: Codable, Hashable {
 }
 
 struct CatalogView: View {
-  let board: String
-  let title: String
-
-  @SceneStorage("catalog_search") private var searchText = ""
-  @Binding var selection: ThreadSelection?
-  
-  var body: some View {
-    FilteredCatalogView(board:board, title:title, selection:_selection, searchText:searchText)
-      .searchable(text: $searchText)
-  }
-}
-
-struct FilteredCatalogView: View {
   @EnvironmentObject private var client: Client
   
   let board: String
@@ -41,25 +28,16 @@ struct FilteredCatalogView: View {
   @Binding var selection: ThreadSelection?
   
   init(board:String, title:String,
-       selection: Binding<ThreadSelection?>, searchText:String) {
+       selection: Binding<ThreadSelection?>) {
     self.board = board
     self.title = title
     _selection = selection
-    _threads = .init(CatalogThreadRequest(boardId:board))
-//    _threads = .init({
-//      try await Post.read(
-//        from: $0,
-//        matching: searchText.isEmpty ? \.$board == board :
-//          (\.$board == board &&
-//          (.like(\.$sub, "%\(searchText)%") ||
-//            .like(\.$com, "%\(searchText)%"))),
-//        orderBy: .ascending(\.$id)
-//      )
-//    })
+    _threads = .init(CatalogThreadRequest(boardId:board, like:""))
   }
 
   var body: some View {
     threadsView
+      .searchable(text: $threads.like)
     .refreshable {
       await refresh()
     }
