@@ -1,32 +1,89 @@
-import Blackbird
+import GRDB
 
-struct Post : BlackbirdModel {
-  @BlackbirdColumn var id: Int
-  /// The board this post is in. Note that this is not part of the FourChan Post.
-  @BlackbirdColumn var board: String
-  @BlackbirdColumn var sub: String?
-  @BlackbirdColumn var com: String?
-  @BlackbirdColumn var tim: Int?
-  @BlackbirdColumn var filename: String?
+struct Post  {
+  var id: Int
+  /// Not part of FourChan Post
+  var catalogThreadId: Int
+  var sub: String?
+  var com: String?
+  var tim: Int?
+  var filename: String?
   /// File extension. .jpg, .png, .gif, .pdf, .swf, .webm
-  @BlackbirdColumn var ext: String?
+  var ext: String?
   /// Image width.
-  @BlackbirdColumn var w: Int?
+  var w: Int?
 
   /// Image height.
-  @BlackbirdColumn var h: Int?
+  var h: Int?
 
   /// Thumbnail width.
-  @BlackbirdColumn var tn_w: Int?
+  var tn_w: Int?
 
   /// Thumbnail height.
-  @BlackbirdColumn var tn_h: Int?
-  @BlackbirdColumn var replies: Int?
-  @BlackbirdColumn var images: Int?
+  var tn_h: Int?
+  var replies: Int?
+  var images: Int?
 }
 
 extension Post {
   var no: Int {
     id
   }
+}
+
+extension Post : Identifiable {}
+
+// MARK: - Persistence
+
+/// Make Post a Codable Record.
+///
+/// See <https://github.com/groue/GRDB.swift/blob/master/README.md#records>
+extension Post: Codable, FetchableRecord, MutablePersistableRecord {
+  // Define database columns from CodingKeys
+  fileprivate enum Columns {
+    static let id = Column(CodingKeys.id)
+    static let catalogThreadId = Column(CodingKeys.catalogThreadId)
+    static let sub = Column(CodingKeys.sub)
+    static let com = Column(CodingKeys.com)
+    static let tim = Column(CodingKeys.tim)
+    static let filename = Column(CodingKeys.filename)
+    static let ext = Column(CodingKeys.ext)
+    static let w = Column(CodingKeys.w)
+    static let h = Column(CodingKeys.h)
+    static let tn_w = Column(CodingKeys.tn_w)
+    static let tn_h = Column(CodingKeys.tn_h)
+    static let replies = Column(CodingKeys.replies)
+    static let images = Column(CodingKeys.images)
+  }
+}
+
+extension Post: TableRecord {
+  static let thread = belongsTo(CatalogThread.self)
+  var thread: QueryInterfaceRequest<CatalogThread> {
+    request(for: Post.thread)
+  }
+}
+
+// MARK: - Post Database Requests
+
+/// Define some post requests used by the application.
+///
+/// See <https://swiftpackageindex.com/groue/grdb.swift/documentation/grdb/recordrecommendedpractices>
+extension DerivableRequest<Post> {
+  /// A request of posts for a given board ordered by id.
+  ///
+  /// For example:
+  ///
+  ///     let posts: [Post] = try dbWriter.read { db in
+  ///         try Post.all().filter(threadId: threadId).fetchAll(db)
+  ///     }
+  func filter(threadId: Int) -> Self {
+    // See https://github.com/groue/GRDB.swift/blob/master/README.md#string-comparison
+    filter(sql: "threadId = ?", arguments: [threadId])
+  }
+  
+//  func threads(boardId: String) -> Self {
+//    joining(required: CatalogThread.posts.filter(boardId:boardId))
+//  }
+
 }

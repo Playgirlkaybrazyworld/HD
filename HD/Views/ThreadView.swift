@@ -130,7 +130,7 @@ struct FilteredThreadView: View {
       let posts: [Post] = fourChanPosts.map {
         Post(
           id: $0.id,
-          board: board,
+          catalogThreadId: 0, // Filled in later
           sub: $0.sub,
           com: $0.com,
           tim: $0.tim,

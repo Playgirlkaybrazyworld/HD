@@ -1,4 +1,5 @@
-import Blackbird
+import GRDB
+import GRDBQuery
 import FourChan
 import Network
 import SwiftUI
@@ -21,20 +22,24 @@ struct BoardsListView: View {
 struct FilteredBoardsListView: View {
   @EnvironmentObject private var client: Client
   @Binding var selection: BoardSelection?
-  @Environment(\.blackbirdDatabase) var database
-  @BlackbirdLiveModels<Board> var boards : Blackbird.LiveResults<Board>
+
+  /// Write access to the database
+  @Environment(\.appDatabase) private var appDatabase
   
+  /// The `boards` property is automatically updated when the database changes
+  @Query(BoardRequest(ordering: .byID)) private var boards: [Board]
+
   init(selection: Binding<BoardSelection?>, searchText:String) {
     _selection = selection
-    _boards = .init({
-      try await Board.read(
-        from: $0,
-        matching: searchText.isEmpty ? nil :
-          (.like(\.$id, "%\(searchText)%") ||
-            .like(\.$title, "%\(searchText)%")),
-        orderBy: .ascending(\.$id)
-      )
-    })
+//    _boards = .init({
+//      try await Board.read(
+//        from: $0,
+//        matching: searchText.isEmpty ? nil :
+//          (.like(\.$id, "%\(searchText)%") ||
+//            .like(\.$title, "%\(searchText)%")),
+//        orderBy: .ascending(\.$id)
+//      )
+//    })
   }
   
   var body: some View {
@@ -52,13 +57,9 @@ struct FilteredBoardsListView: View {
   
   @ViewBuilder
   var boardsView: some View {
-    if boards.didLoad {
-      List(boards.results, selection: $selection) { board in
-        BoardsRowView(board:board)
-          .tag(BoardSelection(board:board.id, title:board.title))
-      }
-    } else {
-      EmptyView()
+    List(boards, selection: $selection) { board in
+      BoardsRowView(board:board)
+        .tag(BoardSelection(board:board.id, title:board.title))
     }
   }
   
@@ -67,16 +68,9 @@ struct FilteredBoardsListView: View {
       let fourChanBoards: Boards = try await client.get(endpoint: .boards)
       let boards =
       fourChanBoards.boards.map { fourChanBoard in
-        Board(id: fourChanBoard.id, title: fourChanBoard.title)
+        Board(name: fourChanBoard.id, title: fourChanBoard.title)
       }
-      try await database!.transaction { core in
-        // Remove all old rows.
-        try await Board.queryIsolated(in:database!, core: core, "DELETE FROM $T")
-        // Add all new rows.
-        for board in boards {
-          try await board.writeIsolated(to: database!, core: core)
-        }
-      }
+      try await appDatabase.update(boards:boards)
     } catch {
       print(error.localizedDescription)
     }

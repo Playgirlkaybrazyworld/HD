@@ -1,5 +1,5 @@
-import Blackbird
 import FourChan
+import GRDBQuery
 import Introspect
 import Network
 import SwiftUI
@@ -29,8 +29,12 @@ struct FilteredCatalogView: View {
   
   let board: String
   let title: String
-  @Environment(\.blackbirdDatabase) var database
-  @BlackbirdLiveModels<Post> var threads : Blackbird.LiveResults<Post>
+  
+  /// Write access to the database
+  @Environment(\.appDatabase) private var appDatabase
+  
+  /// The `threads` property is automatically updated when the database changes
+  @Query<CatalogThreadRequest> private var threads: [Post]
 
   @StateObject private var prefetcher = CatalogViewPrefetcher()
   
@@ -41,16 +45,17 @@ struct FilteredCatalogView: View {
     self.board = board
     self.title = title
     _selection = selection
-    _threads = .init({
-      try await Post.read(
-        from: $0,
-        matching: searchText.isEmpty ? \.$board == board :
-          (\.$board == board &&
-          (.like(\.$sub, "%\(searchText)%") ||
-            .like(\.$com, "%\(searchText)%"))),
-        orderBy: .ascending(\.$id)
-      )
-    })
+    _threads = .init(CatalogThreadRequest(boardId:board))
+//    _threads = .init({
+//      try await Post.read(
+//        from: $0,
+//        matching: searchText.isEmpty ? \.$board == board :
+//          (\.$board == board &&
+//          (.like(\.$sub, "%\(searchText)%") ||
+//            .like(\.$com, "%\(searchText)%"))),
+//        orderBy: .ascending(\.$id)
+//      )
+//    })
   }
 
   var body: some View {
@@ -79,17 +84,13 @@ struct FilteredCatalogView: View {
   
   @ViewBuilder
   var threadsView : some View {
-    if threads.didLoad {
-      List(threads.results, id:\.id, selection: $selection){ thread in
-        CatalogRowView(board:board, thread: thread)
-          .tag(ThreadSelection(
-            board: board,
-            title: thread.title,
-            no: thread.no
-          ))
-      }
-    } else {
-      EmptyView()
+    List(threads, id:\.id, selection: $selection){ thread in
+      CatalogRowView(board:board, thread: thread)
+        .tag(ThreadSelection(
+          board: board,
+          title: thread.title,
+          no: thread.no
+        ))
     }
   }
   
@@ -100,7 +101,7 @@ struct FilteredCatalogView: View {
       let threads = fourChanThreads.map {
         Post(
           id: $0.id,
-          board: board,
+          catalogThreadId: $0.id,
           sub: $0.sub,
           com: $0.com,
           tim: $0.tim,
@@ -115,14 +116,7 @@ struct FilteredCatalogView: View {
         )
       }
       self.prefetcher.posts = threads
-      try await database!.transaction { core in
-        // Remove all old rows.
-        try await Post.queryIsolated(in:database!, core: core, "DELETE FROM $T WHERE board = ?", board)
-        // Add all new rows.
-        for catalogThread in threads {
-          try await catalogThread.writeIsolated(to: database!, core: core)
-        }
-      }
+      try await appDatabase.update(boardId:board, threads:threads)
     } catch {
       print(error.localizedDescription)
     }
