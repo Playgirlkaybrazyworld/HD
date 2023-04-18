@@ -46,10 +46,10 @@ struct PostRequest: Queryable {
   // to test PlayerRequest.
   func fetchValue(_ db: Database) throws -> [Post] {
     if like.isEmpty {
-      return try Post.all().filter(catalogThreadId:threadId).fetchAll(db)
+      return try Post.all().filter(threadId:threadId).fetchAll(db)
     } else {
       let like = "%\(like)%"
-      return try Post.all().filter(sql: "catalogThreadId = ? AND (sub LIKE ? OR com LIKE ?)",
+      return try Post.all().filter(sql: "threadId = ? AND (sub LIKE ? OR com LIKE ?)",
                             arguments: [threadId, like, like]).fetchAll(db)
     }
   }

@@ -79,7 +79,7 @@ struct CatalogView: View {
       let threads = fourChanThreads.map {
         Post(
           id: $0.id,
-          catalogThreadId: $0.id,
+          threadId: $0.id,
           sub: $0.sub,
           com: $0.com,
           tim: $0.tim,

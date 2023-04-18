@@ -106,7 +106,7 @@ struct ThreadView: View {
       let posts: [Post] = fourChanPosts.map {
         Post(
           id: $0.id,
-          catalogThreadId: threadNo,
+          threadId: threadNo,
           sub: $0.sub,
           com: $0.com,
           tim: $0.tim,

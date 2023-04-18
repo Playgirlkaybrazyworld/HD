@@ -110,7 +110,7 @@ extension AppDatabase {
         t.column("title", .integer).notNull()
       }
       
-      try db.create(table: "catalogThread") { t in
+      try db.create(table: "thread") { t in
         t.column("threadno", .integer).primaryKey().notNull()
         t.column("boardId", .text)
           .notNull()
@@ -120,9 +120,9 @@ extension AppDatabase {
             
       try db.create(table: "post") { t in
         t.column("id", .integer).primaryKey().notNull()
-        t.column("catalogThreadId", .integer).notNull()
+        t.column("threadId", .integer).notNull()
           .indexed()
-          .references("catalogThread", onDelete: .cascade)
+          .references("thread", onDelete: .cascade)
         t.column("sub", .text)
         t.column("com", .text)
         t.column("tim", .integer)
@@ -186,7 +186,7 @@ extension AppDatabase {
       for var thread in threads {
         var catalogThread = CatalogThread(threadNo: thread.id, boardId: boardId)
         try catalogThread.upsert(db)
-        thread.catalogThreadId = catalogThread.threadNo
+        thread.threadId = catalogThread.threadNo
         try thread.upsert(db)
       }
     }

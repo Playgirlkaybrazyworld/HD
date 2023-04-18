@@ -3,7 +3,7 @@ import GRDB
 struct Post  {
   var id: Int
   /// Not part of FourChan Post
-  var catalogThreadId: Int
+  var threadId: Int
   var sub: String?
   var com: String?
   var tim: Int?
@@ -42,7 +42,7 @@ extension Post: Codable, FetchableRecord, MutablePersistableRecord {
   // Define database columns from CodingKeys
   fileprivate enum Columns {
     static let id = Column(CodingKeys.id)
-    static let catalogThreadId = Column(CodingKeys.catalogThreadId)
+    static let threadId = Column(CodingKeys.threadId)
     static let sub = Column(CodingKeys.sub)
     static let com = Column(CodingKeys.com)
     static let tim = Column(CodingKeys.tim)
@@ -77,8 +77,8 @@ extension DerivableRequest<Post> {
   ///     let posts: [Post] = try dbWriter.read { db in
   ///         try Post.all().filter(threadId: threadId).fetchAll(db)
   ///     }
-  func filter(catalogThreadId: Int) -> Self {
-    filter(sql: "catalogThreadId = ?", arguments: [catalogThreadId]).orderByPrimaryKey()
+  func filter(threadId: Int) -> Self {
+    filter(sql: "threadId = ?", arguments: [threadId]).orderByPrimaryKey()
   }
   
 //  func threads(boardId: String) -> Self {

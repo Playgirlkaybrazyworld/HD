@@ -1,6 +1,8 @@
 import GRDB
 
 struct CatalogThread {
+  static let databaseTableName = "thread"
+
   var threadNo: Int
   var boardId: String
 }
