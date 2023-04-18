@@ -116,6 +116,7 @@ extension AppDatabase {
           .notNull()
           .indexed()
           .references("board", onDelete: .cascade)
+        t.column("topPost", .integer)
       }
             
       try db.create(table: "post") { t in
@@ -199,6 +200,15 @@ extension AppDatabase {
       // Add posts
       for var post in posts {
         try post.upsert(db)
+      }
+    }
+  }
+  
+  func saveTopPost(threadId: Int, topPost: Int) async throws {
+    try await dbWriter.write { db in
+      if var thread = try CatalogThread.fetchOne(db, id:threadId) {
+        thread.topPost = topPost
+        try thread.update(db)
       }
     }
   }

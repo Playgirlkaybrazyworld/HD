@@ -5,6 +5,7 @@ struct CatalogThread {
 
   var threadNo: Int
   var boardId: String
+  var topPost: Int?
 }
 
 extension CatalogThread: Identifiable {
@@ -15,7 +16,7 @@ extension CatalogThread: Identifiable {
 
 // MARK: - Persistence
 
-/// Make Board a Codable Record.
+/// Make CatalogThread a Codable Record.
 ///
 /// See <https://github.com/groue/GRDB.swift/blob/master/README.md#records>
 extension CatalogThread: Codable, FetchableRecord, MutablePersistableRecord {
@@ -23,6 +24,7 @@ extension CatalogThread: Codable, FetchableRecord, MutablePersistableRecord {
   fileprivate enum Columns {
     static let threadNo = Column(CodingKeys.threadNo)
     static let boardId = Column(CodingKeys.boardId)
+    static let topPost = Column(CodingKeys.topPost)
   }
 }
 
