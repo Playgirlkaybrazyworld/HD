@@ -19,6 +19,10 @@ struct PostRequest: Queryable {
   /// The ordering used by the player request.
   var threadId: Int
   
+  /// If non-empty, used in a "Like" query
+  var like: String
+
+  
   // MARK: - Queryable Implementation
   
   static var defaultValue: [Post] { [] }
@@ -41,6 +45,12 @@ struct PostRequest: Queryable {
   // This method is not required by Queryable, but it makes it easier
   // to test PlayerRequest.
   func fetchValue(_ db: Database) throws -> [Post] {
-    return try Post.all().filter(catalogThreadId:threadId).fetchAll(db)
+    if like.isEmpty {
+      return try Post.all().filter(catalogThreadId:threadId).fetchAll(db)
+    } else {
+      let like = "%\(like)%"
+      return try Post.all().filter(sql: "catalogThreadId = ? AND (sub LIKE ? OR com LIKE ?)",
+                            arguments: [threadId, like, like]).fetchAll(db)
+    }
   }
 }

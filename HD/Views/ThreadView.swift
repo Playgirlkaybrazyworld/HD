@@ -6,33 +6,11 @@ import SwiftUI
 import UIKit
 
 struct ThreadView: View {
-  let title: String
-  let board: String
-  let threadNo: Int
-  @Binding private var topPost: Int?
-  
-  @SceneStorage("thread_search") private var searchText = ""
-  
-  init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>) {
-    self.title = title
-    self.board = board
-    self.threadNo = threadNo
-    self._topPost = topPost
-  }
-  
-  var body: some View {
-    FilteredThreadView(title:title, board:board, threadNo: threadNo, topPost: _topPost, searchText:searchText)
-      .searchable(text: $searchText)
-  }
-}
-
-struct FilteredThreadView: View {
   @EnvironmentObject private var client: Client
   let title: String
   let board: String
   let threadNo: Int
   @Binding private var topPost: Int?
-  let searchText: String
   
   /// Write access to the database
   @Environment(\.appDatabase) private var appDatabase
@@ -43,18 +21,18 @@ struct FilteredThreadView: View {
   @StateObject private var prefetcher = ThreadViewPrefetcher()
   @StateObject private var viewModel = ThreadViewModel()
   
-  init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>, searchText: String) {
+  init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>) {
     self.title = title
     self.board = board
     self.threadNo = threadNo
     self._topPost = topPost
-    self.searchText = searchText
-    _posts = .init(PostRequest(threadId:threadNo))
+    _posts = .init(PostRequest(threadId:threadNo, like:""))
   }
   
   var body: some View {
     ScrollViewReader{ scrollViewProxy in
       postsView
+        .searchable(text:$posts.like)
         .refreshable {
           await refresh()
         }
@@ -146,16 +124,6 @@ struct FilteredThreadView: View {
       try await appDatabase.update(posts:posts)
     } catch {
       print(error.localizedDescription)
-    }
-  }
-  
-  func filter(posts: [Post]) -> [Post] {
-    if searchText.isEmpty {
-      return posts
-    } else {
-      return posts.filter {
-        $0.contains(text:searchText)
-      }
     }
   }
 }
