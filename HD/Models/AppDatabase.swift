@@ -118,7 +118,7 @@ extension AppDatabase {
           .references("board", onDelete: .cascade)
         t.column("topPost", .integer)
       }
-            
+      
       try db.create(table: "post") { t in
         t.column("id", .integer).primaryKey().notNull()
         t.column("threadId", .integer).notNull()
@@ -136,6 +136,19 @@ extension AppDatabase {
         t.column("replies", .integer)
         t.column("images", .integer)
       }
+      
+      try db.create(table: "appConfiguration") { t in
+        // The single row guarantee
+        t.primaryKey("id", .integer, onConflict: .replace).check { $0 == 1 }
+      
+        // The configuration columns
+        t.column("boardID", .text)
+          .indexed()
+          .references("board", onDelete: .setNull)
+        t.column("threadID", .integer)
+          .indexed()
+          .references("thread", onDelete: .setNull)
+      }
     }
     
     // Migrations for future application versions will be inserted here:
@@ -151,6 +164,18 @@ extension AppDatabase {
 // The write methods execute invariant-preserving database transactions.
 
 extension AppDatabase {
+  
+  func updateSelection(boardId: String? = nil, threadId: Int? = nil) async throws {
+    // If boardId is nil, then threadId is also nil.
+    let threadId = boardId == nil ? nil : threadId
+    try await dbWriter.write { db in
+      var config = try AppConfiguration.fetch(db)
+      try config.updateChanges(db) {
+        $0.boardId = boardId
+        $0.threadId = threadId
+      }
+    }
+  }
   
   func update(boards: [Board]) async throws  {
     try await dbWriter.write { db in

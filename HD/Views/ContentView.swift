@@ -1,16 +1,13 @@
+import GRDB
 import Network
 import SwiftUI
 
-struct SelectionState: Codable {
-  var boardSelection: BoardSelection?
-  var threadSelection: ThreadSelection?
-  var threadTopPost: Int?
-}
-
 struct ContentView: View {
   @Environment(\.scenePhase) private var scenePhase
+  /// Write access to the database
+  @Environment(\.appDatabase) private var appDatabase
+
   @StateObject var client = Client()
-  @SceneStorage("selection") private var selectionData: Data?
   @State private var boardSelection: BoardSelection?
   @State private var threadSelection: ThreadSelection?
   @State private var threadTopPost: Int?
@@ -55,30 +52,39 @@ struct ContentView: View {
     .onChange(of: scenePhase) { phase in
       switch phase {
       case .active:
-        // restore state if present
-        if let selectionData {
-          let decoder = JSONDecoder()
-          let selection = try? decoder.decode(SelectionState.self, from: selectionData)
-          boardSelection = selection?.boardSelection
-          threadSelection = selection?.threadSelection
-          threadTopPost = selection?.threadTopPost
-        }
+        restoreState()
       case .inactive,.background:
-        if boardSelection != nil {
-          let encoder = JSONEncoder()
-          let selectionState =
-          SelectionState(
-            boardSelection:boardSelection,
-            threadSelection:threadSelection,
-            threadTopPost:threadTopPost
-          )
-          if let newSelectionData = try? encoder.encode(selectionState) {
-            selectionData = newSelectionData
-          }
-        }
+        saveState()
       default:
         break
       }
     }
+  }
+  
+  func saveState() {
+    Task {
+      try await appDatabase.updateSelection(boardId:boardSelection?.board,
+                                  threadId:threadSelection?.no)
+    }
+  }
+  
+  // restore state if present
+  func restoreState() {
+    var boardSelection: BoardSelection? = nil
+    var threadSelection: ThreadSelection? = nil
+    var threadTopPost : Int? = nil
+    let appConfig = try! appDatabase.reader.read { db in
+        try AppConfiguration.fetch(db)
+    }
+    if let board = appConfig.boardId {
+      boardSelection = BoardSelection(board:board, title: "Pending")
+      if let thread = appConfig.threadId {
+        threadSelection = ThreadSelection(board:board, title: "Pending", no: thread)
+        threadTopPost = thread
+      }
+    }
+    self.boardSelection = boardSelection
+    self.threadSelection = threadSelection
+    self.threadTopPost = threadTopPost
   }
 }
