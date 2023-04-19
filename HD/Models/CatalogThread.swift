@@ -5,7 +5,6 @@ struct CatalogThread {
 
   var threadNo: Int
   var boardId: String
-  var topPost: Int?
 }
 
 extension CatalogThread: Identifiable {
@@ -24,7 +23,6 @@ extension CatalogThread: Codable, FetchableRecord, MutablePersistableRecord {
   fileprivate enum Columns {
     static let threadNo = Column(CodingKeys.threadNo)
     static let boardId = Column(CodingKeys.boardId)
-    static let topPost = Column(CodingKeys.topPost)
   }
 }
 
@@ -41,7 +39,7 @@ extension CatalogThread: TableRecord {
 }
 
 
-// MARK: - Board Database Requests
+// MARK: - Database Requests
 
 /// Define some board requests used by the application.
 ///

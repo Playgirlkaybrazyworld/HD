@@ -10,7 +10,6 @@ struct ThreadView: View {
   let title: String
   let board: String
   let threadNo: Int
-  @Binding private var topPost: Int?
   
   /// Write access to the database
   @Environment(\.appDatabase) private var appDatabase
@@ -19,13 +18,18 @@ struct ThreadView: View {
   @Query<PostRequest> private var posts: [Post]
   
   @StateObject private var prefetcher = ThreadViewPrefetcher()
-  @StateObject private var viewModel = ThreadViewModel()
+  @EnvironmentStateObject private var viewModel: ThreadViewModel
   
-  init(title: String, board: String, threadNo: Int, topPost: Binding<Int?>) {
+  init(title: String, board: String, threadNo: Int) {
     self.title = title
     self.board = board
     self.threadNo = threadNo
-    self._topPost = topPost
+    _viewModel = EnvironmentStateObject { env in
+      ThreadViewModel(
+        appDatabase: env.appDatabase,
+                      threadId:threadNo)
+  }
+    
     _posts = .init(PostRequest(threadId:threadNo, like:""))
   }
   
@@ -42,15 +46,11 @@ struct ThreadView: View {
           collectionView.isPrefetchingEnabled = true
           collectionView.prefetchDataSource = self.prefetcher
         }
-        .onChange(of: viewModel.scrollToPostNo) { postNo in
-          if let postNo {
-            scrollViewProxy.scrollTo(postNo)
-            viewModel.scrollToPostNoAnimated = false
-            viewModel.scrollToPostNo = nil
-          }
+        .onAppear {
+          maybeScrollToPostNo(scrollViewProxy: scrollViewProxy)
         }
-        .onChange(of: viewModel.topVisiblePost) {topVisiblePost in
-          topPost = topVisiblePost
+        .onChange(of: viewModel.scrollToPostNo) { _ in
+          maybeScrollToPostNo(scrollViewProxy: scrollViewProxy)
         }
     }
     .environment(\.openURL, OpenURLAction { url in
@@ -124,6 +124,14 @@ struct ThreadView: View {
       try await appDatabase.update(posts:posts)
     } catch {
       print(error.localizedDescription)
+    }
+  }
+  
+  func maybeScrollToPostNo(scrollViewProxy: ScrollViewProxy) {
+    if let postNo = viewModel.scrollToPostNo {
+      scrollViewProxy.scrollTo(postNo)
+      viewModel.scrollToPostNoAnimated = false
+      viewModel.scrollToPostNo = nil
     }
   }
 }

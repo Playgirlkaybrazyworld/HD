@@ -10,7 +10,6 @@ struct ContentView: View {
   @StateObject var client = Client()
   @State private var boardSelection: BoardSelection?
   @State private var threadSelection: ThreadSelection?
-  @State private var threadTopPost: Int?
 
   var body: some View {
     NavigationSplitView(
@@ -34,8 +33,7 @@ struct ContentView: View {
            boardSelection.board == threadSelection.board {
           ThreadView(title: threadSelection.title,
                      board: threadSelection.board,
-                     threadNo: threadSelection.no,
-                     topPost: $threadTopPost)
+                     threadNo: threadSelection.no)
           .id(threadSelection)
         } else {
           Text("Please choose a thread.")
@@ -52,7 +50,7 @@ struct ContentView: View {
     .onChange(of: scenePhase) { phase in
       switch phase {
       case .active:
-        restoreState()
+        try? restoreState()
       case .inactive,.background:
         saveState()
       default:
@@ -69,22 +67,28 @@ struct ContentView: View {
   }
   
   // restore state if present
-  func restoreState() {
+  func restoreState() throws {
     var boardSelection: BoardSelection? = nil
     var threadSelection: ThreadSelection? = nil
-    var threadTopPost : Int? = nil
-    let appConfig = try! appDatabase.reader.read { db in
+    let appConfig = try appDatabase.reader.read { db in
         try AppConfiguration.fetch(db)
     }
     if let board = appConfig.boardId {
-      boardSelection = BoardSelection(board:board, title: "Pending")
-      if let thread = appConfig.threadId {
-        threadSelection = ThreadSelection(board:board, title: "Pending", no: thread)
-        threadTopPost = thread
+      let title = (try? appDatabase.reader.read { db in
+        try Board.fetchOne(db, id:board)?.title
+      }) ?? "Unknown"
+      boardSelection = BoardSelection(board:board, title: title)
+      if let threadId = appConfig.threadId {
+        var title = "Untitled"
+        if let post = try? appDatabase.reader.read({ db in
+          try Post.fetchOne(db, id:threadId)
+        }) {
+          title = post.title
+        }
+        threadSelection = ThreadSelection(board:board, title: title, no: threadId)
       }
     }
     self.boardSelection = boardSelection
     self.threadSelection = threadSelection
-    self.threadTopPost = threadTopPost
   }
 }

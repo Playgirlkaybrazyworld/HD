@@ -9,6 +9,18 @@ struct AppConfiguration: Codable {
   var threadId: Int?
 }
 
+extension AppConfiguration: TableRecord {
+  static let board = belongsTo(Board.self)
+  var board: QueryInterfaceRequest<Board> {
+    request(for: AppConfiguration.board)
+  }
+  
+  static let thread = belongsTo(CatalogThread.self)
+  var thread: QueryInterfaceRequest<CatalogThread> {
+    request(for: AppConfiguration.thread)
+  }
+}
+
 extension AppConfiguration {
     /// The default configuration
     static let `default` = AppConfiguration(boardId: nil, threadId: nil)

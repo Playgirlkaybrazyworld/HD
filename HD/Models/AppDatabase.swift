@@ -116,7 +116,6 @@ extension AppDatabase {
           .notNull()
           .indexed()
           .references("board", onDelete: .cascade)
-        t.column("topPost", .integer)
       }
       
       try db.create(table: "post") { t in
@@ -135,6 +134,15 @@ extension AppDatabase {
         t.column("tn_h", .integer)
         t.column("replies", .integer)
         t.column("images", .integer)
+      }
+      
+      try db.create(table: "threadMemo") { t in
+        t.column("threadId", .integer).primaryKey().notNull()
+          .references("thread", onDelete: .cascade)
+        t.column("topPost", .integer)
+          .notNull()
+          .indexed()
+          .references("post", onDelete: .cascade)
       }
       
       try db.create(table: "appConfiguration") { t in
@@ -231,10 +239,13 @@ extension AppDatabase {
   
   func saveTopPost(threadId: Int, topPost: Int) async throws {
     try await dbWriter.write { db in
-      if var thread = try CatalogThread.fetchOne(db, id:threadId) {
-        thread.topPost = topPost
-        try thread.update(db)
+      var memo = try? ThreadMemo.fetchOne(db, id:threadId)
+      if memo != nil {
+        memo!.topPost = topPost
+      } else {
+        memo = ThreadMemo(threadId:threadId, topPost: topPost)
       }
+      try memo!.save(db)
     }
   }
   

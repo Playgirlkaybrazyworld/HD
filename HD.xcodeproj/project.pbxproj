@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		363AF29129D1EEDB0030B746 /* HideWhenNotActiveModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363AF29029D1EEDB0030B746 /* HideWhenNotActiveModifier.swift */; };
 		3651AB7F29EF8A83001DABEE /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3651AB7E29EF8A83001DABEE /* AppConfiguration.swift */; };
+		3651AB8129EFBBD6001DABEE /* ThreadMemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3651AB8029EFBBD6001DABEE /* ThreadMemo.swift */; };
 		3656CEBD29B6FCF000C64299 /* HDApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3656CEBC29B6FCF000C64299 /* HDApp.swift */; };
 		3656CEC129B6FCF100C64299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3656CEC029B6FCF100C64299 /* Assets.xcassets */; };
 		3656CEC429B6FCF100C64299 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3656CEC329B6FCF100C64299 /* Preview Assets.xcassets */; };
@@ -57,6 +58,7 @@
 /* Begin PBXFileReference section */
 		363AF29029D1EEDB0030B746 /* HideWhenNotActiveModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideWhenNotActiveModifier.swift; sourceTree = "<group>"; };
 		3651AB7E29EF8A83001DABEE /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
+		3651AB8029EFBBD6001DABEE /* ThreadMemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadMemo.swift; sourceTree = "<group>"; };
 		3656CEB929B6FCF000C64299 /* HD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3656CEBC29B6FCF000C64299 /* HDApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDApp.swift; sourceTree = "<group>"; };
 		3656CEC029B6FCF100C64299 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 				3668FA3629EC877C0004D521 /* Board.swift */,
 				3668FA4829ECD03B0004D521 /* BoardRequest.swift */,
 				3668FA4C29ECEC6F0004D521 /* CatalogThread.swift */,
+				3651AB8029EFBBD6001DABEE /* ThreadMemo.swift */,
 				3668FA5229ED0F8F0004D521 /* CatalogThreadRequest.swift */,
 				3668FA4429ECC5F90004D521 /* Persistence.swift */,
 				3668FA3829ECAA960004D521 /* Post.swift */,
@@ -352,6 +355,7 @@
 				3656CEDD29B8498800C64299 /* ThreadView.swift in Sources */,
 				3691E81529DB2B6B00BFE78F /* Post+search.swift in Sources */,
 				3656CEBD29B6FCF000C64299 /* HDApp.swift in Sources */,
+				3651AB8129EFBBD6001DABEE /* ThreadMemo.swift in Sources */,
 				3668FA4D29ECEC6F0004D521 /* CatalogThread.swift in Sources */,
 				366B689629BD30B300B5BC0E /* BoardsListView.swift in Sources */,
 				3656CEE329B850D400C64299 /* ThumbnailView.swift in Sources */,
