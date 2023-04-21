@@ -17,21 +17,21 @@ struct Loader {
         }
         // TODO: Delete old boards, delete threads for old boards, delete posts for old boards.
       }
-    case .catalog(board:):
+    case let .catalog(board:boardId):
       let catalog: Catalog = try await client.get(endpoint: endpoint)
       let fourChanThreads = catalog.flatMap(\.threads)
       try await database.transaction { core in
         try fourChanThreads.forEach {
-          try dbPost($0, threadId: $0.no).writeIsolated(to: database, core: core)
+          try dbPost($0, boardId: boardId, threadId: $0.no).writeIsolated(to: database, core: core)
         }
         // TODO: Delete old threads, delete posts for old threads.
       }
-    case let .thread(board:_, no:threadNo):
+    case let .thread(board: boardId, no:threadNo):
       let thread: ChanThread? = try await client.get(endpoint: endpoint)
       let fourChanPosts = thread?.posts ?? []
       try await database.transaction { core in
         try fourChanPosts.forEach {
-          try dbPost($0, threadId:threadNo).writeIsolated(to: database, core: core)
+          try dbPost($0, boardId:boardId, threadId:threadNo).writeIsolated(to: database, core: core)
         }
         // TODO: Delete old posts in thread.
       }
@@ -40,9 +40,11 @@ struct Loader {
     }
   }
   
-  func dbPost(_ p: FourChan.Post, threadId: Int) -> Post {
+  func dbPost(_ p: FourChan.Post, boardId: String, threadId: Int) -> Post {
     Post(
       id: p.id,
+      boardId: boardId,
+      isThread: threadId == p.id,
       threadId: threadId,
       sub: p.sub,
       com: p.com,

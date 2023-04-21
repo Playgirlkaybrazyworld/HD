@@ -42,14 +42,20 @@ struct FilteredThreadView: View {
     
     _posts = .init({
       try await Post.read(
-        from: $0
-//        ,
-//        matching: searchText.isEmpty ? \.$threadNo == threadNo :
-//          (\.$threadNo == threadNo &&
-//          (.like(\.$sub, "%\(searchText)%") ||
-//            .like(\.$com, "%\(searchText)%")))
+        from: $0,
+        matching: FilteredThreadView.matching(boardId: board, threadId: threadNo, searchText: searchText)
       )
     })
+  }
+  
+  static func matching(boardId: String, threadId: Int, searchText:String) -> BlackbirdModelColumnExpression<Post> {
+    if searchText.isEmpty {
+      return \.$boardId == boardId && \.$threadId == threadId
+    } else {
+      return \.$boardId == boardId && \.$threadId == threadId &&
+               (.like(\.$sub, "%\(searchText)%") ||
+                 .like(\.$com, "%\(searchText)%"))
+    }
   }
   
   var body: some View {

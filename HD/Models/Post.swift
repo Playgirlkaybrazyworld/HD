@@ -1,7 +1,17 @@
 import Blackbird
 
 struct Post: BlackbirdModel, Identifiable  {
+  
+  static var indexes: [[BlackbirdColumnKeyPath]] = [
+      [ \.$boardId ],
+      [ \.$threadId ],
+  ]
+
   @BlackbirdColumn var id: Int
+  /// Not part of FourChan Post
+  @BlackbirdColumn var boardId: String
+  /// Not part of FourChan Post
+  @BlackbirdColumn var isThread: Bool
   /// Not part of FourChan Post
   @BlackbirdColumn var threadId: Int
   @BlackbirdColumn var sub: String?

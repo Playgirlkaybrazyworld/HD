@@ -46,17 +46,22 @@ struct FilteredCatalogView: View {
     _selection = selection
     _threads = .init({
       try await Post.read(
-        from: $0
-        // ,
-//        matching: searchText.isEmpty ? \.$board == board :
-//          (\.$board == board &&
-//          (.like(\.$sub, "%\(searchText)%") ||
-//            .like(\.$com, "%\(searchText)%"))
-//          )
+        from: $0,
+        matching: FilteredCatalogView.matching(boardId: board, searchText:searchText)
       )
     })
   }
-
+  
+  static func matching(boardId: String, searchText:String) -> BlackbirdModelColumnExpression<Post> {
+    if searchText.isEmpty {
+      return \.$boardId == boardId && \.$isThread == true
+    } else {
+      return \.$boardId == boardId && \.$isThread == true &&
+               (.like(\.$sub, "%\(searchText)%") ||
+                 .like(\.$com, "%\(searchText)%"))
+    }
+  }
+  
   var body: some View {
     threadsView
     .refreshable {
