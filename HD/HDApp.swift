@@ -4,7 +4,7 @@ import SwiftUI
 
 @main
 struct HDApp: App {
-  var database = try! Blackbird.Database.inMemoryDatabase()
+  var database = try! Blackbird.Database.inMemoryDatabase(options: [.debugPrintEveryQuery, .debugPrintEveryReportedChange, .debugPrintQueryParameterValues])
   var client = Client()
 
   var body: some Scene {

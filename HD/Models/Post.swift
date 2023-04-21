@@ -4,6 +4,7 @@ struct Post: BlackbirdModel, Identifiable  {
   
   static var indexes: [[BlackbirdColumnKeyPath]] = [
       [ \.$boardId ],
+      [ \.$isThread ],
       [ \.$threadId ],
   ]
 
