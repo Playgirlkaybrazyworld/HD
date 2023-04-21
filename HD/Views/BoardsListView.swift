@@ -1,7 +1,5 @@
-import GRDB
-import GRDBQuery
+import Blackbird
 import FourChan
-import Network
 import SwiftUI
 
 struct BoardSelection: Codable, Hashable {
@@ -10,23 +8,37 @@ struct BoardSelection: Codable, Hashable {
 }
 
 struct BoardsListView: View {
-  @EnvironmentObject private var client: Client
+  @SceneStorage("boards_search") private var searchText = ""
   @Binding var selection: BoardSelection?
-
-  /// Write access to the database
-  @Environment(\.appDatabase) private var appDatabase
   
-  /// The `boards` property is automatically updated when the database changes
-  @Query<BoardRequest> private var boards: [Board]
+  var body: some View {
+    FilteredBoardsListView(selection:_selection, searchText:searchText)
+      .searchable(text: $searchText)
+  }
+}
 
-  init(selection: Binding<BoardSelection?>) {
+struct FilteredBoardsListView: View {
+  @Environment(\.loader) private var loader: Loader!
+  @Binding var selection: BoardSelection?
+  
+  @BlackbirdLiveModels<Board> var boards : Blackbird.LiveResults<Board>
+  
+  init(selection: Binding<BoardSelection?>, searchText: String) {
     _selection = selection
-    _boards = .init(BoardRequest(like:""))
+    _boards = .init({
+      try await Board.read(
+        from: $0,
+        matching: searchText.isEmpty ? nil :
+          (.like(\.$id, "%\(searchText)%") ||
+            .like(\.$title, "%\(searchText)%")),
+        orderBy: .ascending(\.$id)
+      )
+    })
   }
   
   var body: some View {
     boardsView
-      .searchable(text:$boards.like)
+    // .searchable(text:$boards.like)
       .listStyle(.sidebar)
       .refreshable {
         await refresh()
@@ -40,20 +52,19 @@ struct BoardsListView: View {
   
   @ViewBuilder
   var boardsView: some View {
-    List(boards, selection: $selection) { board in
-      BoardsRowView(board:board)
-        .tag(BoardSelection(board:board.id, title:board.title))
+    if boards.didLoad {
+      List(boards.results, selection: $selection) { board in
+        BoardsRowView(board:board)
+          .tag(BoardSelection(board:board.id, title:board.title))
+      }
+    } else {
+      EmptyView()
     }
   }
   
   func refresh() async {
     do {
-      let fourChanBoards: Boards = try await client.get(endpoint: .boards)
-      let boards =
-      fourChanBoards.boards.map { fourChanBoard in
-        Board(name: fourChanBoard.id, title: fourChanBoard.title)
-      }
-      try await appDatabase.update(boards:boards)
+      try await loader.load(endpoint: .boards)
     } catch {
       print(error.localizedDescription)
     }

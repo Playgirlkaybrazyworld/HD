@@ -1,42 +1,60 @@
+import Blackbird
 import FourChan
-import GRDBQuery
 import Introspect
 import Network
 import SwiftUI
 import UIKit
 
 struct ThreadView: View {
-  @EnvironmentObject private var client: Client
+  @SceneStorage("thread_search") private var searchText = ""
   let title: String
   let board: String
   let threadNo: Int
   
-  /// Write access to the database
-  @Environment(\.appDatabase) private var appDatabase
+  var body: some View {
+    FilteredThreadView(title: title,
+                       board: board,
+                       threadNo: threadNo,
+                       searchText:searchText)
+      .searchable(text: $searchText)
+  }
+}
+
+struct FilteredThreadView: View {
+  @Environment(\.loader) private var loader: Loader!
+  @EnvironmentObject private var client: Client
   
-  /// The `threads` property is automatically updated when the database changes
-  @Query<PostRequest> private var posts: [Post]
+  let title: String
+  let board: String
+  let threadNo: Int
+    
+  /// The `posts` property is automatically updated when the database changes
+  @BlackbirdLiveModels<Post> var posts : Blackbird.LiveResults<Post>
   
   @StateObject private var prefetcher = ThreadViewPrefetcher()
-  @EnvironmentStateObject private var viewModel: ThreadViewModel
+  @StateObject private var viewModel: ThreadViewModel
   
-  init(title: String, board: String, threadNo: Int) {
+  init(title: String, board: String, threadNo: Int, searchText: String) {
     self.title = title
     self.board = board
     self.threadNo = threadNo
-    _viewModel = EnvironmentStateObject { env in
-      ThreadViewModel(
-        appDatabase: env.appDatabase,
-                      threadId:threadNo)
-  }
+    _viewModel = StateObject(wrappedValue: ThreadViewModel(threadId:threadNo))
     
-    _posts = .init(PostRequest(threadId:threadNo, like:""))
+    _posts = .init({
+      try await Post.read(
+        from: $0
+//        ,
+//        matching: searchText.isEmpty ? \.$threadNo == threadNo :
+//          (\.$threadNo == threadNo &&
+//          (.like(\.$sub, "%\(searchText)%") ||
+//            .like(\.$com, "%\(searchText)%")))
+      )
+    })
   }
   
   var body: some View {
     ScrollViewReader{ scrollViewProxy in
       postsView
-        .searchable(text:$posts.like)
         .refreshable {
           await refresh()
         }
@@ -83,45 +101,28 @@ struct ThreadView: View {
   
   @ViewBuilder
   var postsView: some View {
-    List(posts){post in
-      PostView(board:board,
-               threadNo:threadNo,
-               post:post)
-      .tag(post.id)
-      .onAppear() {
-        viewModel.appeared(post:post.id)
+    if posts.didLoad {
+      List(posts.results){post in
+        PostView(board:board,
+                 threadNo:threadNo,
+                 post:post)
+        .tag(post.id)
+        .onAppear() {
+          viewModel.appeared(post:post.id)
+        }
+        .onDisappear() {
+          viewModel.disappeared(post:post.id)
+        }
+        .listRowInsets(EdgeInsets())
       }
-      .onDisappear() {
-        viewModel.disappeared(post:post.id)
-      }
-      .listRowInsets(EdgeInsets())
+      .listStyle(.plain)
     }
-    .listStyle(.plain)
   }
   
   func refresh() async {
     do {
-      let thread: ChanThread? = try await client.get(endpoint: .thread(board:board, no:threadNo))
-      let fourChanPosts = thread?.posts ?? []
-      let posts: [Post] = fourChanPosts.map {
-        Post(
-          id: $0.id,
-          threadId: threadNo,
-          sub: $0.sub,
-          com: $0.com,
-          tim: $0.tim,
-          filename: $0.filename,
-          ext: $0.ext,
-          w: $0.w,
-          h: $0.h,
-          tn_w: $0.tn_w,
-          tn_h: $0.tn_h,
-          replies: $0.replies,
-          images: $0.images
-        )
-      }
-      self.prefetcher.posts = posts
-      try await appDatabase.update(posts:posts)
+      try await loader.load(endpoint:.thread(board:board, no:threadNo))
+      // self.prefetcher.posts = posts
     } catch {
       print(error.localizedDescription)
     }

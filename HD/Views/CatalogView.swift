@@ -1,5 +1,5 @@
 import FourChan
-import GRDBQuery
+import Blackbird
 import Introspect
 import Network
 import SwiftUI
@@ -12,32 +12,53 @@ struct ThreadSelection: Codable, Hashable {
 }
 
 struct CatalogView: View {
-  @EnvironmentObject private var client: Client
+  @SceneStorage("catalog_search") private var searchText = ""
   
   let board: String
   let title: String
+
+  @Binding var selection: ThreadSelection?
   
-  /// Write access to the database
-  @Environment(\.appDatabase) private var appDatabase
+  var body: some View {
+    FilteredCatalogView(board:board, title:title, selection:_selection, searchText:searchText)
+      .searchable(text: $searchText)
+  }
+}
+
+struct FilteredCatalogView: View {
+  @Environment(\.loader) private var loader: Loader!
+  @EnvironmentObject private var client: Client
+
+  let board: String
+  let title: String
+  @Binding var selection: ThreadSelection?
   
   /// The `threads` property is automatically updated when the database changes
-  @Query<CatalogThreadRequest> private var threads: [Post]
+  @BlackbirdLiveModels<Post> var threads : Blackbird.LiveResults<Post>
 
   @StateObject private var prefetcher = CatalogViewPrefetcher()
   
-  @Binding var selection: ThreadSelection?
   
   init(board:String, title:String,
-       selection: Binding<ThreadSelection?>) {
+       selection: Binding<ThreadSelection?>, searchText: String) {
     self.board = board
     self.title = title
     _selection = selection
-    _threads = .init(CatalogThreadRequest(boardId:board, like:""))
+    _threads = .init({
+      try await Post.read(
+        from: $0
+        // ,
+//        matching: searchText.isEmpty ? \.$board == board :
+//          (\.$board == board &&
+//          (.like(\.$sub, "%\(searchText)%") ||
+//            .like(\.$com, "%\(searchText)%"))
+//          )
+      )
+    })
   }
 
   var body: some View {
     threadsView
-      .searchable(text: $threads.like)
     .refreshable {
       await refresh()
     }
@@ -62,39 +83,21 @@ struct CatalogView: View {
   
   @ViewBuilder
   var threadsView : some View {
-    List(threads, id:\.id, selection: $selection){ thread in
-      CatalogRowView(board:board, thread: thread)
-        .tag(ThreadSelection(
-          board: board,
-          title: thread.title,
-          no: thread.no
-        ))
+    if threads.didLoad {
+      List(threads.results, id:\.id, selection: $selection){ thread in
+        CatalogRowView(board:board, thread: thread)
+          .tag(ThreadSelection(
+            board: board,
+            title: thread.title,
+            no: thread.id
+          ))
+      }
     }
   }
   
   func refresh() async {
     do {
-      let catalog: Catalog = try await client.get(endpoint: .catalog(board:board))
-      let fourChanThreads = catalog.flatMap(\.threads)
-      let threads = fourChanThreads.map {
-        Post(
-          id: $0.id,
-          threadId: $0.id,
-          sub: $0.sub,
-          com: $0.com,
-          tim: $0.tim,
-          filename: $0.filename,
-          ext: $0.ext,
-          w: $0.w,
-          h: $0.h,
-          tn_w: $0.tn_w,
-          tn_h: $0.tn_h,
-          replies: $0.replies,
-          images: $0.images
-        )
-      }
-      self.prefetcher.posts = threads
-      try await appDatabase.update(boardId:board, threads:threads)
+      try await loader.load(endpoint: .catalog(board:board))
     } catch {
       print(error.localizedDescription)
     }

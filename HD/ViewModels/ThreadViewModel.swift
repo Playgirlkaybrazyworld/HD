@@ -3,7 +3,6 @@ import Foundation
 typealias PostNumber = Int
 
 class ThreadViewModel : ObservableObject {
-  var appDatabase: AppDatabase
   let threadId: Int
   
   @Published var scrollToPostNo: PostNumber?
@@ -12,16 +11,15 @@ class ThreadViewModel : ObservableObject {
   private var visiblePosts = Set<PostNumber>()
   var scrollToPostNoAnimated: Bool = false
   
-  init(appDatabase: AppDatabase, threadId: Int) {
-    self.appDatabase = appDatabase
+  init(threadId: Int) {
     self.threadId = threadId
     
-    if let topPost = try? appDatabase.reader.read({ db in
-      let memo = try ThreadMemo.fetchOne(db, id:threadId)
-      return memo?.topPost
-    }) {
-      scrollToPostNo = topPost
-    }
+//    if let topPost = try? appDatabase.reader.read({ db in
+//      let memo = try ThreadMemo.fetchOne(db, id:threadId)
+//      return memo?.topPost
+//    }) {
+//      scrollToPostNo = topPost
+//    }
   }
   
   func appeared(post: PostNumber) {
@@ -34,9 +32,9 @@ class ThreadViewModel : ObservableObject {
     if topVisiblePost != newTopVisiblePost {
       topVisiblePost = newTopVisiblePost
       if let topVisiblePost, scrollToPostNo == nil  {
-        Task {
-          try await appDatabase.saveTopPost(threadId: threadId, topPost:topVisiblePost)
-        }
+//        Task {
+//          try await appDatabase.saveTopPost(threadId: threadId, topPost:topVisiblePost)
+//        }
       }
     }
   }
