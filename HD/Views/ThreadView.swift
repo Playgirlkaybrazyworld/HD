@@ -49,7 +49,7 @@ struct ThreadView: View {
         .onAppear {
           maybeScrollToPostNo(scrollViewProxy: scrollViewProxy)
         }
-        .onChange(of: viewModel.scrollToPostNo) { _ in
+        .onChange(of: viewModel.scrollToPostNo) {
           maybeScrollToPostNo(scrollViewProxy: scrollViewProxy)
         }
     }

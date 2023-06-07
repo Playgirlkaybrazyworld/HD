@@ -41,14 +41,14 @@ struct ContentView: View {
       }
     )
     .environmentObject(client)
-    .onChange(of: boardSelection) { _ in
+    .onChange(of: boardSelection) {
       if threadSelection?.board != nil &&
         threadSelection?.board != boardSelection?.board {
         threadSelection = nil
       }
     }
-    .onChange(of: scenePhase) { phase in
-      switch phase {
+    .onChange(of: scenePhase) {
+      switch scenePhase {
       case .active:
         try? restoreState()
       case .inactive,.background:
