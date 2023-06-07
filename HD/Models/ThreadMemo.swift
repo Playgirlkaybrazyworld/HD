@@ -1,25 +1,25 @@
-import GRDB
+import SwiftData
 
 /// Remember information about the thread
-struct ThreadMemo {
+@Model
+final class ThreadMemo {
+  @Attribute(.unique)
   var threadId: Int
   /// The top post the last time the thread was read.
   var topPost: Int
-}
 
-extension ThreadMemo: Identifiable {
-  var id: Int {
-    threadId
+  init(threadId: Int, topPost: Int) {
+    self.threadId = threadId
+    self.topPost = topPost
   }
 }
 
-/// Make ThreadMemo a Codable Record.
-///
-/// See <https://github.com/groue/GRDB.swift/blob/master/README.md#records>
-extension ThreadMemo: Codable, FetchableRecord, MutablePersistableRecord {
-  // Define database columns from CodingKeys
-  fileprivate enum Columns {
-    static let threadId = Column(CodingKeys.threadId)
-    static let topPost = Column(CodingKeys.topPost)
+extension ThreadMemo {
+  static var preview: ThreadMemo {
+    let item = ThreadMemo(
+      threadId: 17,
+      topPost: 17
+    )
+    return item
   }
 }

@@ -1,7 +1,6 @@
-import GRDB
-import GRDBQuery
 import FourChan
 import Network
+import SwiftData
 import SwiftUI
 
 struct BoardSelection: Codable, Hashable {
@@ -13,20 +12,18 @@ struct BoardsListView: View {
   @EnvironmentObject private var client: Client
   @Binding var selection: BoardSelection?
 
-  /// Write access to the database
-  @Environment(\.appDatabase) private var appDatabase
-  
+  @Environment(\.modelContext) private var modelContext
+
   /// The `boards` property is automatically updated when the database changes
-  @Query<BoardRequest> private var boards: [Board]
+  @Query private var boards: [Board]
 
   init(selection: Binding<BoardSelection?>) {
     _selection = selection
-    _boards = .init(BoardRequest(like:""))
   }
   
   var body: some View {
     boardsView
-      .searchable(text:$boards.like)
+      // TODO: .searchable(text:$boards.like)
       .listStyle(.sidebar)
       .refreshable {
         await refresh()
@@ -42,7 +39,7 @@ struct BoardsListView: View {
   var boardsView: some View {
     List(boards, selection: $selection) { board in
       BoardsRowView(board:board)
-        .tag(BoardSelection(board:board.id, title:board.title))
+        .tag(BoardSelection(board:board.name, title:board.title))
     }
   }
   
@@ -53,7 +50,10 @@ struct BoardsListView: View {
       fourChanBoards.boards.map { fourChanBoard in
         Board(name: fourChanBoard.id, title: fourChanBoard.title)
       }
-      try await appDatabase.update(boards:boards)
+      // TODO: insert batch
+      for board in boards {
+        modelContext.insert(board)
+      }
     } catch {
       print(error.localizedDescription)
     }

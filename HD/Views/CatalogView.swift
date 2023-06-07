@@ -1,5 +1,5 @@
 import FourChan
-import GRDBQuery
+import SwiftData
 import Introspect
 import Network
 import SwiftUI
@@ -17,11 +17,10 @@ struct CatalogView: View {
   let board: String
   let title: String
   
-  /// Write access to the database
-  @Environment(\.appDatabase) private var appDatabase
-  
+  @Environment(\.modelContext) private var modelContext
+
   /// The `threads` property is automatically updated when the database changes
-  @Query<CatalogThreadRequest> private var threads: [Post]
+  @Query private var threads: [Post]
 
   @StateObject private var prefetcher = CatalogViewPrefetcher()
   
@@ -32,12 +31,11 @@ struct CatalogView: View {
     self.board = board
     self.title = title
     _selection = selection
-    _threads = .init(CatalogThreadRequest(boardId:board, like:""))
   }
 
   var body: some View {
     threadsView
-      .searchable(text: $threads.like)
+      // TODO: .searchable(text: $threads.like)
     .refreshable {
       await refresh()
     }
@@ -78,7 +76,7 @@ struct CatalogView: View {
       let fourChanThreads = catalog.flatMap(\.threads)
       let threads = fourChanThreads.map {
         Post(
-          id: $0.id,
+          no: $0.id,
           threadId: $0.id,
           sub: $0.sub,
           com: $0.com,
@@ -94,7 +92,10 @@ struct CatalogView: View {
         )
       }
       self.prefetcher.posts = threads
-      try await appDatabase.update(boardId:board, threads:threads)
+      // TODO batch insert
+      for thread in threads {
+        modelContext.insert(thread)
+      }
     } catch {
       print(error.localizedDescription)
     }

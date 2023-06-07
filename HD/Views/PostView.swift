@@ -41,7 +41,7 @@ struct PostView: View {
             FourChanWebEndpoint.post(
               board: self.board,
               thread: self.threadNo,
-              post: self.post.id
+              post: self.post.no
             ).url
           )
         }

@@ -1,9 +1,9 @@
 import FourChan
-import GRDBQuery
 import Introspect
 import Network
 import SwiftUI
 import UIKit
+import SwiftData
 
 struct ThreadView: View {
   @EnvironmentObject private var client: Client
@@ -11,32 +11,30 @@ struct ThreadView: View {
   let board: String
   let threadNo: Int
   
-  /// Write access to the database
-  @Environment(\.appDatabase) private var appDatabase
-  
+  @Environment(\.modelContext) private var modelContext
+
   /// The `threads` property is automatically updated when the database changes
-  @Query<PostRequest> private var posts: [Post]
+  @Query private var posts: [Post]
   
   @StateObject private var prefetcher = ThreadViewPrefetcher()
-  @EnvironmentStateObject private var viewModel: ThreadViewModel
+//  private var viewModel: ThreadViewModel
   
   init(title: String, board: String, threadNo: Int) {
     self.title = title
     self.board = board
     self.threadNo = threadNo
-    _viewModel = EnvironmentStateObject { env in
-      ThreadViewModel(
-        appDatabase: env.appDatabase,
-                      threadId:threadNo)
-  }
+//    viewModel =
+//      ThreadViewModel(
+//        appDatabase: env.appDatabase,
+//                      threadId:threadNo)
+//  }
     
-    _posts = .init(PostRequest(threadId:threadNo, like:""))
   }
   
   var body: some View {
     ScrollViewReader{ scrollViewProxy in
       postsView
-        .searchable(text:$posts.like)
+        // .searchable(text:$posts.like)
         .refreshable {
           await refresh()
         }
@@ -49,18 +47,18 @@ struct ThreadView: View {
         .onAppear {
           maybeScrollToPostNo(scrollViewProxy: scrollViewProxy)
         }
-        .onChange(of: viewModel.scrollToPostNo) {
-          maybeScrollToPostNo(scrollViewProxy: scrollViewProxy)
-        }
+//        .onChange(of: viewModel.scrollToPostNo) {
+//          maybeScrollToPostNo(scrollViewProxy: scrollViewProxy)
+//        }
     }
-    .environment(\.openURL, OpenURLAction { url in
-      if let postURL = PostURL(url:url) {
-        viewModel.scrollToPostNo = postURL.postNo
-        viewModel.scrollToPostNoAnimated = true
-        return .handled
-      }
-      return .systemAction
-    })
+//    .environment(\.openURL, OpenURLAction { url in
+//      if let postURL = PostURL(url:url) {
+////        viewModel.scrollToPostNo = postURL.postNo
+////        viewModel.scrollToPostNoAnimated = true
+//        return .handled
+//      }
+//      return .systemAction
+//    })
     .introspectNavigationController { navigationController in
       navigationController.hidesBarsOnSwipe = true
     }
@@ -88,12 +86,12 @@ struct ThreadView: View {
                threadNo:threadNo,
                post:post)
       .tag(post.id)
-      .onAppear() {
-        viewModel.appeared(post:post.id)
-      }
-      .onDisappear() {
-        viewModel.disappeared(post:post.id)
-      }
+//      .onAppear() {
+//        viewModel.appeared(post:post.id)
+//      }
+//      .onDisappear() {
+//        viewModel.disappeared(post:post.id)
+//      }
       .listRowInsets(EdgeInsets())
     }
     .listStyle(.plain)
@@ -105,7 +103,7 @@ struct ThreadView: View {
       let fourChanPosts = thread?.posts ?? []
       let posts: [Post] = fourChanPosts.map {
         Post(
-          id: $0.id,
+          no: $0.id,
           threadId: threadNo,
           sub: $0.sub,
           com: $0.com,
@@ -121,17 +119,20 @@ struct ThreadView: View {
         )
       }
       self.prefetcher.posts = posts
-      try await appDatabase.update(posts:posts)
+      // TODO bulk insert
+      for post in posts {
+        modelContext.insert(post)
+      }
     } catch {
       print(error.localizedDescription)
     }
   }
   
   func maybeScrollToPostNo(scrollViewProxy: ScrollViewProxy) {
-    if let postNo = viewModel.scrollToPostNo {
-      scrollViewProxy.scrollTo(postNo)
-      viewModel.scrollToPostNoAnimated = false
-      viewModel.scrollToPostNo = nil
-    }
+//    if let postNo = viewModel.scrollToPostNo {
+//      scrollViewProxy.scrollTo(postNo)
+//      viewModel.scrollToPostNoAnimated = false
+//      viewModel.scrollToPostNo = nil
+//    }
   }
 }

@@ -10,7 +10,7 @@ struct BoardsRowView: View {
     HStack {
       Text(board.title)
       Spacer()
-      Text(board.id)
+      Text(board.name)
         .speechSpellsOutCharacters(true)
         .foregroundColor(.secondary)
     }

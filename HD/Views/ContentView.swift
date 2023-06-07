@@ -1,11 +1,10 @@
-import GRDB
 import Network
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
   @Environment(\.scenePhase) private var scenePhase
-  /// Write access to the database
-  @Environment(\.appDatabase) private var appDatabase
+  @Environment(\.modelContext) private var modelContext
 
   @StateObject var client = Client()
   @State private var boardSelection: BoardSelection?
@@ -60,35 +59,35 @@ struct ContentView: View {
   }
   
   func saveState() {
-    Task {
-      try await appDatabase.updateSelection(boardId:boardSelection?.board,
-                                  threadId:threadSelection?.no)
-    }
+    // TODO
+    //  try await appDatabase.updateSelection(boardId:boardSelection?.board,
+    //                              threadId:threadSelection?.no)
   }
   
   // restore state if present
   func restoreState() throws {
-    var boardSelection: BoardSelection? = nil
-    var threadSelection: ThreadSelection? = nil
-    let appConfig = try appDatabase.reader.read { db in
-        try AppConfiguration.fetch(db)
-    }
-    if let board = appConfig.boardId {
-      let title = (try? appDatabase.reader.read { db in
-        try Board.fetchOne(db, id:board)?.title
-      }) ?? "Unknown"
-      boardSelection = BoardSelection(board:board, title: title)
-      if let threadId = appConfig.threadId {
-        var title = "Untitled"
-        if let post = try? appDatabase.reader.read({ db in
-          try Post.fetchOne(db, id:threadId)
-        }) {
-          title = post.title
-        }
-        threadSelection = ThreadSelection(board:board, title: title, no: threadId)
-      }
-    }
-    self.boardSelection = boardSelection
-    self.threadSelection = threadSelection
+    // TODO
+//    var boardSelection: BoardSelection? = nil
+//    var threadSelection: ThreadSelection? = nil
+//    let appConfig = try appDatabase.reader.read { db in
+//        try AppConfiguration.fetch(db)
+//    }
+//    if let board = appConfig.boardId {
+//      let title = (try? appDatabase.reader.read { db in
+//        try Board.fetchOne(db, id:board)?.title
+//      }) ?? "Unknown"
+//      boardSelection = BoardSelection(board:board, title: title)
+//      if let threadId = appConfig.threadId {
+//        var title = "Untitled"
+//        if let post = try? appDatabase.reader.read({ db in
+//          try Post.fetchOne(db, id:threadId)
+//        }) {
+//          title = post.title
+//        }
+//        threadSelection = ThreadSelection(board:board, title: title, no: threadId)
+//      }
+//    }
+//    self.boardSelection = boardSelection
+//    self.threadSelection = threadSelection
   }
 }
