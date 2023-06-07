@@ -78,7 +78,7 @@ struct PostView: View {
       }
       return "\(tim)"
     }
-    return "post \(post.id)"
+    return "post \(post.no)"
   }
   
   var imageURL : URL? {

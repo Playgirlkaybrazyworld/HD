@@ -92,15 +92,6 @@ struct CatalogRowView: View {
   }
 }
 
-extension Post {
-  var title: String {
-    if let title = sub ?? com {
-      return HTMLString(html:title).asRawText
-    }
-    return "\(id)"
-  }
-}
-
 struct CatalogRowView_Previews: PreviewProvider {
   static var previews: some View {
     Text("TBD")

@@ -1,4 +1,5 @@
 import SwiftData
+import HTMLString
 
 @Model
 final class Post  {
@@ -54,6 +55,16 @@ final class Post  {
     self.tn_h = tn_h
     self.replies = replies
     self.images = images
+  }
+}
+
+extension Post {
+  @Transient
+  var title: String {
+    if let title = sub ?? com {
+      return HTMLString(html:title).asRawText
+    }
+    return "\(no)"
   }
 }
 

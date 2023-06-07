@@ -85,7 +85,7 @@ struct ThreadView: View {
       PostView(board:board,
                threadNo:threadNo,
                post:post)
-      .tag(post.id)
+      .tag(post.no)
 //      .onAppear() {
 //        viewModel.appeared(post:post.id)
 //      }
